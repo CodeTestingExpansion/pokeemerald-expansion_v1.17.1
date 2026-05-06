@@ -1130,4 +1130,3 @@ const u8 gText_DexNavNoEncounters[] = _("There are no wild Pokémon!");
 
 const u8 gText_AM[] = _("AM");
 const u8 gText_PM[] = _("PM");
-const u8 gText_24hNone[] = _("");

@@ -2107,11 +2107,8 @@ extern const u8 gText_FollowerReturnedToBall[];
 extern const u8 gText_DoWhatWithFollower[];
 extern const u8 gText_DexNavDescription[];
 extern const u8 gText_DexNavNoEncounters[];
-extern const u8 gText_DexNavNoEncounters[];
 extern const u8 gText_AM[];
 extern const u8 gText_PM[];
-extern const u8 gText_24hNone[];
-extern const u8 gText_24hNone[];
 
 
 #endif // GUARD_STRINGS_H
