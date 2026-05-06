@@ -50,6 +50,7 @@
 #include "constants/battle_frontier.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "rtc.h"
 
 // Menu actions
 enum
@@ -85,6 +86,7 @@ COMMON_DATA bool8 (*gMenuCallback)(void) = NULL;
 
 // EWRAM
 EWRAM_DATA static u8 sSafariBallsWindowId = 0;
+EWRAM_DATA static u8 sStartClockWindowId = 0;
 EWRAM_DATA static u8 sBattlePyramidFloorWindowId = 0;
 EWRAM_DATA static u8 sStartMenuCursorPos = 0;
 EWRAM_DATA static u8 sNumStartMenuActions = 0;
@@ -148,7 +150,7 @@ static bool8 FieldCB_ReturnToFieldStartMenu(void);
 static const struct WindowTemplate sWindowTemplate_SafariBalls = {
     .bg = 0,
     .tilemapLeft = 1,
-    .tilemapTop = 1,
+    .tilemapTop = 5,
     .width = 9,
     .height = 4,
     .paletteNum = 15,
@@ -170,7 +172,7 @@ static const u8 *const sPyramidFloorNames[FRONTIER_STAGES_PER_CHALLENGE + 1] =
 static const struct WindowTemplate sWindowTemplate_PyramidFloor = {
     .bg = 0,
     .tilemapLeft = 1,
-    .tilemapTop = 1,
+    .tilemapTop = 5,
     .width = 10,
     .height = 4,
     .paletteNum = 15,
@@ -180,7 +182,7 @@ static const struct WindowTemplate sWindowTemplate_PyramidFloor = {
 static const struct WindowTemplate sWindowTemplate_PyramidPeak = {
     .bg = 0,
     .tilemapLeft = 1,
-    .tilemapTop = 1,
+    .tilemapTop = 5,
     .width = 12,
     .height = 4,
     .paletteNum = 15,
@@ -279,6 +281,7 @@ static void ShowSaveInfoWindow(void);
 static void RemoveSaveInfoWindow(void);
 static void HideStartMenuWindow(void);
 static void HideStartMenuDebug(void);
+static void ShowTimeWindow(void);
 
 static void BuildStartMenuActions(void)
 {
@@ -465,19 +468,110 @@ static void ShowPyramidFloorWindow(void)
     CopyWindowToVram(sBattlePyramidFloorWindowId, COPYWIN_GFX);
 }
 
+//CLOCK START MENU
+static const u8 gText_TimeLabel[] = _("TIME: ");
+
+static void ShowTimeWindow(void)
+{
+    if (SM_TIME == SM_TIME_NONE)
+    {
+
+    }
+    else
+    {
+        u8 convertedHours;
+        const u8 *suffix = NULL;
+        u8 *ptr;
+        struct WindowTemplate template; // TEMPLATE WIDTH MODIFIER FROM 7 OR 9 TILES, FOR AM/PM TEXT IN 12H MODE
+
+        // 1. BASE WINDOW
+        template.bg = 0;
+        template.tilemapLeft = 1;
+        template.tilemapTop = 1;
+        template.height = 2;
+        template.paletteNum = 15;
+        template.baseBlock = 0x30;
+
+        // 2. 12H MODE
+        if (SM_TIME == SM_TIME_12H)
+        {
+            template.width = 9; // 9 TILES FOR AM/PM TEXT
+        
+            if (gLocalTime.hours == 0)
+            {
+                convertedHours = 12;
+                suffix = gText_AM;
+            }
+            else if (gLocalTime.hours < 12)
+            {
+                convertedHours = gLocalTime.hours;
+                suffix = gText_AM;
+            }
+            else if (gLocalTime.hours == 12)
+            {
+                convertedHours = 12;
+                suffix = gText_PM;
+            }
+            else
+            {
+                convertedHours = gLocalTime.hours - 12;
+                suffix = gText_PM;
+            }
+        }
+        else // 24H MODE
+        {
+            template.width = 7; // 7 TILES
+            convertedHours = gLocalTime.hours;
+            suffix = NULL;
+        }
+
+        // 3. WINDOW DRAW
+        sStartClockWindowId = AddWindow(&template);
+        PutWindowTilemap(sStartClockWindowId);
+        DrawStdWindowFrame(sStartClockWindowId, FALSE);
+        FillWindowPixelBuffer(sStartClockWindowId, PIXEL_FILL(1));
+
+        // 4. BUILD STRING
+        ptr = StringCopy(gStringVar4, gText_TimeLabel);
+    
+        // 5. HOUR ALIGN LEFT
+        ptr = ConvertIntToDecimalStringN(ptr, convertedHours, STR_CONV_MODE_LEFT_ALIGN, 2);
+    
+        // 6. COLON
+        *ptr++ = CHAR_COLON;
+    
+        // 7. MINUTES
+        ptr = ConvertIntToDecimalStringN(ptr, gLocalTime.minutes, STR_CONV_MODE_LEADING_ZEROS, 2);
+
+        if (suffix != NULL)
+        {
+            *ptr++ = CHAR_SPACE; 
+            ptr = StringCopy(ptr, suffix);
+        }
+
+        // 8. RENDER AND VRAM
+        AddTextPrinterParameterized(sStartClockWindowId, 1, gStringVar4, 0, 1, 0xFF, NULL);
+        CopyWindowToVram(sStartClockWindowId, COPYWIN_GFX);
+    }
+}
+//
+
 static void RemoveExtraStartMenuWindows(void)
 {
     if (GetSafariZoneFlag())
     {
         ClearStdWindowAndFrameToTransparent(sSafariBallsWindowId, FALSE);
-        CopyWindowToVram(sSafariBallsWindowId, COPYWIN_GFX);
+        //CopyWindowToVram(sSafariBallsWindowId, COPYWIN_GFX);
         RemoveWindow(sSafariBallsWindowId);
     }
-    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
+    else if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
     {
         ClearStdWindowAndFrameToTransparent(sBattlePyramidFloorWindowId, FALSE);
         RemoveWindow(sBattlePyramidFloorWindowId);
     }
+    ClearStdWindowAndFrameToTransparent(sStartClockWindowId, FALSE);
+    // CopyWindowToVram(sStartClockWindowId, COPYWIN_GFX);
+    RemoveWindow(sStartClockWindowId);
 }
 
 static bool32 PrintStartMenuActions(s8 *pIndex, u32 count)
@@ -533,15 +627,19 @@ static bool32 InitStartMenuStep(void)
     case 3:
         if (GetSafariZoneFlag())
             ShowSafariBallsWindow();
-        if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
+        else if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
             ShowPyramidFloorWindow();
         sInitStartMenuData[0]++;
         break;
     case 4:
+    ShowTimeWindow();
+        sInitStartMenuData[0]++;
+        break;
+    case 5:
         if (PrintStartMenuActions(&sInitStartMenuData[1], 2))
             sInitStartMenuData[0]++;
         break;
-    case 5:
+    case 6:
         sStartMenuCursorPos = InitMenuNormal(GetStartMenuWindowId(), FONT_NORMAL, 0, 9, 16, sNumStartMenuActions, sStartMenuCursorPos);
         CopyWindowToVram(GetStartMenuWindowId(), COPYWIN_MAP);
         return TRUE;
@@ -671,6 +769,8 @@ static bool8 HandleStartMenuInput(void)
         return TRUE;
     }
 
+    RemoveExtraStartMenuWindows();
+    ShowTimeWindow();
     return FALSE;
 }
 
@@ -700,6 +800,12 @@ static bool8 StartMenuPokemonCallback(void)
         SetMainCallback2(CB2_PartyMenuFromStartMenu); // Display party menu
 
         return TRUE;
+    }
+
+    if (!GetSafariZoneFlag() && !InBattlePyramid_() && gSaveBlock2Ptr->playTimeSeconds == 0) 
+    {
+        RemoveExtraStartMenuWindows();
+        ShowTimeWindow();
     }
 
     return FALSE;

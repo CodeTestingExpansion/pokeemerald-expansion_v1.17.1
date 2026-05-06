@@ -166,4 +166,10 @@
 // Script Config
 #define OW_CHECK_FOR_TOTAL_EVS TRUE        // If FALSE, givemon and createmon will not check for total EVs when generating a new Pokemon
 
+// StartMenu Clock
+#define SM_TIME_12H     0  // AM/PM CLOCK
+#define SM_TIME_24H     1  // 24H CLOCK
+#define SM_TIME_NONE    2  // NO CLOCK
+#define SM_TIME         SM_TIME_24H
+
 #endif // GUARD_CONFIG_OVERWORLD_H

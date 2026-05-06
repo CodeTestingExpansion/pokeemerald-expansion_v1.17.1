@@ -1127,3 +1127,7 @@ const u8 gText_FollowerReturnedToBall[] = _("Returned {STR_VAR_1} to its ball.{P
 const u8 gText_DoWhatWithFollower[] = _("Do what with {STR_VAR_1}?");
 const u8 gText_DexNavDescription[] = _("Search for wild Pokémon.");
 const u8 gText_DexNavNoEncounters[] = _("There are no wild Pokémon!");
+
+const u8 gText_AM[] = _("AM");
+const u8 gText_PM[] = _("PM");
+const u8 gText_24hNone[] = _("");
