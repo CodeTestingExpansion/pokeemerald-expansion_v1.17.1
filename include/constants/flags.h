@@ -51,12 +51,12 @@
 
 #else
 
-#define FLAG_UNUSED_0x020    0x20 // Unused Flag
-#define FLAG_UNUSED_0x021    0x21 // Unused Flag
-#define FLAG_UNUSED_0x022    0x22 // Unused Flag
-#define FLAG_UNUSED_0x023    0x23 // Unused Flag
-#define FLAG_UNUSED_0x024    0x24 // Unused Flag
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
+#define FLAG_DN_FLAG_SEARCHING     0x20 // DEXNAV
+#define FLAG_DN_FLAG_DEXNAV_GET    0x21 // DEXNAV
+#define FLAG_DN_FLAG_DETECTOR_MODE 0x22 // DEXNAV
+#define FLAG_EXP_SHARE_FLAG_ACTIVE 0x23 // EXP Share is active.
+#define FLAG_VS_SEEKER_FLAG_ACTIVE 0x24 // VS SEEKER is active.
+#define FLAG_FOLLOWER_FLAG_ACTIVE  0x25 // FOLLOWES ACTIVE 
 #define FLAG_UNUSED_0x026    0x26 // Unused Flag
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag
 #define FLAG_UNUSED_0x028    0x28 // Unused Flag
@@ -2447,6 +2447,5 @@
 #define TESTING_FLAG_UNUSED_6                   (TESTING_FLAGS_START + 0x6)
 #define TESTING_FLAG_UNUSED_7                   (TESTING_FLAGS_START + 0x7)
 #endif // TESTING
-
 
 #endif // GUARD_CONSTANTS_FLAGS_H
