@@ -813,6 +813,11 @@ struct
     [MENU_TRADE1]          = {sText_Trade4,                       CursorCb_Trade1},
     [MENU_TRADE2]          = {sText_Trade4,                       CursorCb_Trade2},
     [MENU_TOSS]            = {gMenuText_Toss,                     CursorCb_Toss},
+    [MENU_LEVEL_UP_MOVES]  = {COMPOUND_STRING("LEVEL MOVES"),     CursorCb_ChangeLevelUpMoves},
+    [MENU_EGG_MOVES]       = {COMPOUND_STRING("EGG MOVES"),       CursorCb_ChangeEggMoves},
+    [MENU_TM_MOVES]        = {COMPOUND_STRING("TM MOVES"),        CursorCb_ChangeTMMoves},
+    [MENU_TUTOR_MOVES]     = {COMPOUND_STRING("TUTOR MOVES"),     CursorCb_ChangeTutorMoves},
+    [MENU_SUB_MOVES]       = {COMPOUND_STRING("LEARN MOVES"),     CursorCb_LearnMovesSubMenu},
     [MENU_CATALOG_BULB]    = {COMPOUND_STRING("Light bulb"),      CursorCb_CatalogBulb},
     [MENU_CATALOG_OVEN]    = {COMPOUND_STRING("Microwave oven"),  CursorCb_CatalogOven},
     [MENU_CATALOG_WASHING] = {COMPOUND_STRING("Washing machine"), CursorCb_CatalogWashing},
@@ -821,6 +826,7 @@ struct
     [MENU_CATALOG_MOWER]   = {COMPOUND_STRING("Lawn mower"),      CursorCb_CatalogMower},
     [MENU_CHANGE_FORM]     = {COMPOUND_STRING("Change form"),     CursorCb_ChangeForm},
     [MENU_CHANGE_ABILITY]  = {COMPOUND_STRING("Change Ability"),  CursorCb_ChangeAbility},
+    [MENU_SUB_FIELD_MOVES] = {COMPOUND_STRING("FIELD MOVES"),     CursorCb_FieldMovesSubMenu},
 };
 
 static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWITCH, MENU_CANCEL1};
