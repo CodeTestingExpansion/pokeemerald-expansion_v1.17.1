@@ -3084,6 +3084,8 @@ static void TradeMons(u8 playerPartyIdx, u8 partnerPartyIdx)
 {
     u8 friendship;
     struct Pokemon *playerMon, *partnerMon;
+    if (gSaveBlock3Ptr->followerIndex == playerPartyIdx)
+        gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_NOT_SET;
     if (playerPartyIdx == PC_MON_CHOSEN)
         playerMon = &gParties[B_TRAINER_OPPONENT_A][TRADEMON_FROM_PC];
     else

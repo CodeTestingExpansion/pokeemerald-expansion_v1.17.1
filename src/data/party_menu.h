@@ -155,6 +155,7 @@ static const u8 sFontColorTable[][3] =
     {TEXT_COLOR_WHITE,       TEXT_COLOR_BLUE,       TEXT_COLOR_LIGHT_BLUE}, // Field moves
     {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE,      TEXT_COLOR_DARK_GRAY},  // Unused
     {TEXT_COLOR_WHITE,       TEXT_COLOR_RED,        TEXT_COLOR_LIGHT_RED},  // Move relearner
+    {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_GREEN,      TEXT_COLOR_LIGHT_GRAY}, // Follower menu
 };
 
 static const struct WindowTemplate sSinglePartyMenuWindowTemplate[] =
@@ -688,6 +689,28 @@ static const struct WindowTemplate sUnusedWindowTemplate2 =
     .baseBlock = 0x39D,
 };
 
+static const struct WindowTemplate sFollowerSetWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 23,
+    .tilemapTop = 15,
+    .width = 6,
+    .height = 4,
+    .paletteNum = 14,
+    .baseBlock = 0x39D,
+};
+
+static const struct WindowTemplate sFollowerSetReturnWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 23,
+    .tilemapTop = 13,
+    .width = 6,
+    .height = 6,
+    .paletteNum = 14,
+    .baseBlock = 0x39D,
+};
+
 // Plain tilemaps for party menu slots.
 // The versions with no HP bar are used by eggs, and in certain displays like registering at a battle facility.
 // There is no empty version of the main slot because it shouldn't ever be empty.
@@ -758,6 +781,7 @@ static const u8 *const sActionStringTable[] =
     [PARTY_MSG_NO_POKEMON]             = COMPOUND_STRING("You have no POKéMON."),
     [PARTY_MSG_CHOOSE_MON_FOR_BOX]     = gText_SendWhichMonToPC,
     [PARTY_MSG_MOVE_ITEM_WHERE]        = gText_MoveItemWhere,
+    [PARTY_MSG_DO_WHAT_WITH_FOLLOWER]  = gText_DoWhatWithFollower,
 };
 
 static const u8 *const sDescriptionStringTable[] =
@@ -827,6 +851,10 @@ struct
     [MENU_CHANGE_FORM]     = {COMPOUND_STRING("Change form"),     CursorCb_ChangeForm},
     [MENU_CHANGE_ABILITY]  = {COMPOUND_STRING("Change Ability"),  CursorCb_ChangeAbility},
     [MENU_SUB_FIELD_MOVES] = {COMPOUND_STRING("FIELD MOVES"),     CursorCb_FieldMovesSubMenu},
+    [MENU_FOLLOWER]        = {gText_Follower,                     CursorCb_Follower},
+    [MENU_FOLLOWER_SET]    = {gText_FollowerSet,                  CursorCb_FollowerSet},
+    [MENU_FOLLOWER_RETURN] = {gText_FollowerReturn,               CursorCb_FollowerReturn},
+    [MENU_FOLLOWER_UNSET]  = {gText_FollowerUnset,                CursorCb_FollowerUnset},
 };
 
 static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWITCH, MENU_CANCEL1};
@@ -844,7 +872,10 @@ static const u8 sPartyMenuAction_TradeSummaryCancel2[] = {MENU_TRADE2, MENU_SUMM
 static const u8 sPartyMenuAction_TakeItemTossCancel[] = {MENU_TAKE_ITEM, MENU_TOSS, MENU_CANCEL1};
 static const u8 sPartyMenuAction_RotomCatalog[] = {MENU_CATALOG_BULB, MENU_CATALOG_OVEN, MENU_CATALOG_WASHING, MENU_CATALOG_FRIDGE, MENU_CATALOG_FAN, MENU_CATALOG_MOWER, MENU_CANCEL1};
 static const u8 sPartyMenuAction_ZygardeCube[] = {MENU_CHANGE_FORM, MENU_CHANGE_ABILITY, MENU_CANCEL1};
-
+static const u8 sPartyMenuAction_SetCancel[] = {MENU_FOLLOWER_SET, MENU_CANCEL2};
+static const u8 sPartyMenuAction_SetReturnCancel[] = {MENU_FOLLOWER_SET, MENU_FOLLOWER_RETURN, MENU_CANCEL2};
+static const u8 sPartyMenuAction_UnsetCancel[] = {MENU_FOLLOWER_UNSET, MENU_CANCEL2};
+static const u8 sPartyMenuAction_UnsetReturnCancel[] = {MENU_FOLLOWER_UNSET, MENU_FOLLOWER_RETURN, MENU_CANCEL2};
 
 
 static const u8 *const sPartyMenuActions[] =
@@ -865,6 +896,10 @@ static const u8 *const sPartyMenuActions[] =
     [ACTIONS_TAKEITEM_TOSS] = sPartyMenuAction_TakeItemTossCancel,
     [ACTIONS_ROTOM_CATALOG] = sPartyMenuAction_RotomCatalog,
     [ACTIONS_ZYGARDE_CUBE]  = sPartyMenuAction_ZygardeCube,
+    [ACTIONS_FOLLOWER_SET]          = sPartyMenuAction_SetCancel,
+    [ACTIONS_FOLLOWER_SET_RETURN]   = sPartyMenuAction_SetReturnCancel,
+    [ACTIONS_FOLLOWER_UNSET]        = sPartyMenuAction_UnsetCancel,
+    [ACTIONS_FOLLOWER_UNSET_RETURN] = sPartyMenuAction_UnsetReturnCancel,
 };
 
 static const u8 sPartyMenuActionCounts[] =
@@ -885,6 +920,10 @@ static const u8 sPartyMenuActionCounts[] =
     [ACTIONS_TAKEITEM_TOSS] = ARRAY_COUNT(sPartyMenuAction_TakeItemTossCancel),
     [ACTIONS_ROTOM_CATALOG] = ARRAY_COUNT(sPartyMenuAction_RotomCatalog),
     [ACTIONS_ZYGARDE_CUBE]  = ARRAY_COUNT(sPartyMenuAction_ZygardeCube),
+    [ACTIONS_FOLLOWER_SET]          = ARRAY_COUNT(sPartyMenuAction_SetCancel),
+    [ACTIONS_FOLLOWER_SET_RETURN]   = ARRAY_COUNT(sPartyMenuAction_SetReturnCancel),
+    [ACTIONS_FOLLOWER_UNSET]        = ARRAY_COUNT(sPartyMenuAction_UnsetCancel),
+    [ACTIONS_FOLLOWER_UNSET_RETURN] = ARRAY_COUNT(sPartyMenuAction_UnsetReturnCancel),
 };
 
 static const u8 *const sUnionRoomTradeMessages[] =

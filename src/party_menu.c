@@ -84,6 +84,10 @@
 enum {
     MENU_SUMMARY,
     MENU_SWITCH,
+    MENU_FOLLOWER,
+    MENU_FOLLOWER_SET,
+    MENU_FOLLOWER_RETURN,
+    MENU_FOLLOWER_UNSET,
     MENU_CANCEL1,
     MENU_ITEM,
     MENU_GIVE,
@@ -139,6 +143,10 @@ enum {
     ACTIONS_TAKEITEM_TOSS,
     ACTIONS_ROTOM_CATALOG,
     ACTIONS_ZYGARDE_CUBE,
+    ACTIONS_FOLLOWER_SET,
+    ACTIONS_FOLLOWER_SET_RETURN,
+    ACTIONS_FOLLOWER_UNSET,
+    ACTIONS_FOLLOWER_UNSET_RETURN,
 };
 
 enum {
@@ -195,6 +203,7 @@ struct PartyMenuInternal
     u8 windowId[3];
     u8 actions[MAX_MON_MOVES + 5];
     u8 numActions;
+    bool8 returnToActionMenu;
     // In vanilla Emerald, only the first 0xB0 hwords (0x160 bytes) are actually used.
     // However, a full 0x100 hwords (0x200 bytes) are allocated.
     // It is likely that the 0x160 value used below is a constant defined by
@@ -341,6 +350,10 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *, u8);
 static void SetPartyMonLearnMoveSelectionActions(struct Pokemon *, u8);
 static void SetPartyMonFieldMoveSelectionActions(struct Pokemon *, u8);
 static bool8 HasVisibleFieldMove(struct Pokemon *);
+static void CursorCb_Follower(u8);
+static void CursorCb_FollowerSet(u8);
+static void CursorCb_FollowerUnset(u8);
+static void CursorCb_FollowerReturn(u8);
 static u8 GetPartyMenuActionsTypeInBattle(struct Pokemon *);
 static u8 GetPartySlotEntryStatus(s8);
 static void Task_UpdateHeldItemSprite(u8);
@@ -551,6 +564,7 @@ static void InitPartyMenu(enum PartyMenuType menuType, enum PartyMenuLayout layo
         sPartyMenuInternal->task = task;
         sPartyMenuInternal->exitCallback = NULL;
         sPartyMenuInternal->lastSelectedSlot = 0;
+        sPartyMenuInternal->returnToActionMenu = FALSE;
         sPartyMenuInternal->spriteIdConfirmPokeball = 0x7F;
         sPartyMenuInternal->spriteIdCancelPokeball = 0x7F;
 
@@ -2808,6 +2822,7 @@ void DisplayPartyMenuStdMessage(u32 stringId)
         case PARTY_MSG_DO_WHAT_WITH_MON:
             *windowPtr = AddWindow(&sDoWhatWithMonMsgWindowTemplate);
             break;
+        case PARTY_MSG_DO_WHAT_WITH_FOLLOWER:
         case PARTY_MSG_DO_WHAT_WITH_ITEM:
             *windowPtr = AddWindow(&sDoWhatWithItemMsgWindowTemplate);
             break;
@@ -2880,6 +2895,12 @@ static u8 DisplaySelectionWindow(u8 windowType)
     case SELECTWINDOW_ITEM:
         window = sItemGiveTakeWindowTemplate;
         break;
+    case SELECTWINDOW_FOLLOWER:
+        window = sFollowerSetWindowTemplate;
+        break;
+    case SELECTWINDOW_FOLLOWER_RETURN:
+        window = sFollowerSetReturnWindowTemplate;
+        break;
     case SELECTWINDOW_MAIL:
         window = sMailReadTakeWindowTemplate;
         break;
@@ -2910,6 +2931,9 @@ static u8 DisplaySelectionWindow(u8 windowType)
             fontColorsId = 4;
         if (sPartyMenuInternal->actions[i] == MENU_SUB_FIELD_MOVES)
             fontColorsId = 4;
+        if (sPartyMenuInternal->actions[i] >= MENU_FOLLOWER
+         && sPartyMenuInternal->actions[i] <= MENU_FOLLOWER_UNSET)
+            fontColorsId = 7;
         if (sPartyMenuInternal->actions[i] >= MENU_LEVEL_UP_MOVES && sPartyMenuInternal->actions[i] <= MENU_SUB_MOVES)
             fontColorsId = 6;
 
@@ -2998,6 +3022,9 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 
     if (!InBattlePike())
     {
+        if (GetMonData(&mons[slotId], MON_DATA_SPECIES) != SPECIES_NONE
+         && GetMonData(&mons[slotId], MON_DATA_IS_EGG) == FALSE)
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_FOLLOWER);
         if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SWITCH);
         if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))
@@ -3255,8 +3282,8 @@ void CB2_ReturnToPartyMenuFromSummaryScreen(void)
 
 static void CursorCb_Switch(u8 taskId)
 {
-    // Reset follower steps when the party leader is changed
-    if (gPartyMenu.slotId == 0 || gPartyMenu.slotId2 == 0)
+    if ((gPartyMenu.slotId == 0 || gPartyMenu.slotId2 == 0)
+     && gSaveBlock3Ptr->followerIndex == OW_FOLLOWER_NOT_SET)
         gFollowerSteps = 0;
     PlaySE(SE_SELECT);
     gPartyMenu.action = PARTY_ACTION_SWITCH;
@@ -3266,6 +3293,95 @@ static void CursorCb_Switch(u8 taskId)
     AnimatePartySlot(gPartyMenu.slotId, 1);
     gPartyMenu.slotId2 = gPartyMenu.slotId;
     gTasks[taskId].func = Task_HandleChooseMonInput;
+}
+
+static void CursorCb_Follower(u8 taskId)
+{
+    struct Pokemon *party = gParties[B_TRAINER_PLAYER];
+    struct Pokemon *mon = &party[gPartyMenu.slotId];
+    u16 hp = GetMonData(mon, MON_DATA_HP);
+
+    PlaySE(SE_SELECT);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    if (gSaveBlock3Ptr->followerIndex == gPartyMenu.slotId)
+    {
+        SetPartyMonSelectionActions(party, gPartyMenu.slotId,
+            hp == 0 ? ACTIONS_FOLLOWER_UNSET : ACTIONS_FOLLOWER_UNSET_RETURN);
+        DisplaySelectionWindow(hp == 0 ? SELECTWINDOW_FOLLOWER : SELECTWINDOW_FOLLOWER_RETURN);
+    }
+    else if (gSaveBlock3Ptr->followerIndex == OW_FOLLOWER_NOT_SET
+          && (gPartyMenu.slotId == 0 || mon == GetFirstLiveMon()))
+    {
+        SetPartyMonSelectionActions(party, gPartyMenu.slotId,
+            hp == 0 ? ACTIONS_FOLLOWER_SET : ACTIONS_FOLLOWER_SET_RETURN);
+        DisplaySelectionWindow(hp == 0 ? SELECTWINDOW_FOLLOWER : SELECTWINDOW_FOLLOWER_RETURN);
+    }
+    else
+    {
+        SetPartyMonSelectionActions(party, gPartyMenu.slotId, ACTIONS_FOLLOWER_SET);
+        DisplaySelectionWindow(SELECTWINDOW_FOLLOWER);
+    }
+
+    GetMonNickname(mon, gStringVar1);
+    DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_FOLLOWER);
+    gTasks[taskId].data[0] = 0xFF;
+    gTasks[taskId].func = Task_HandleSelectionMenuInput;
+}
+
+static void CursorCb_FollowerSet(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+    u16 hp = GetMonData(mon, MON_DATA_HP);
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    PlaySE(SE_SELECT);
+    if (hp != 0)
+    {
+        gSaveBlock3Ptr->followerIndex = gPartyMenu.slotId;
+        if (gPartyMenu.slotId != 0)
+            gFollowerSteps = 0;
+    }
+    GetMonNickname(mon, gStringVar1);
+    if (hp == 0)
+        StringExpandPlaceholders(gStringVar4, gText_FollowerFainted);
+    else
+        StringExpandPlaceholders(gStringVar4, gText_FollowerPreferred);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
+    gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+}
+
+static void CursorCb_FollowerReturn(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    PlaySE(SE_SELECT);
+    gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_RECALLED;
+    gFollowerSteps = 0;
+    GetMonNickname(mon, gStringVar1);
+    StringExpandPlaceholders(gStringVar4, gText_FollowerReturnedToBall);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
+    gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+}
+
+static void CursorCb_FollowerUnset(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    PlaySE(SE_SELECT);
+    if (gSaveBlock3Ptr->followerIndex != 0)
+        gFollowerSteps = 0;
+    gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_NOT_SET;
+    GetMonNickname(mon, gStringVar1);
+    StringExpandPlaceholders(gStringVar4, gText_FollowerDefaulted);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
+    gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
 }
 
 #define tSlot1Left     data[0]
@@ -3486,6 +3602,10 @@ static void SwitchPartyMon(void)
     mon1 = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
     mon2 = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId2];
     monBuffer = Alloc(sizeof(struct Pokemon));
+    if (gPartyMenu.slotId == gSaveBlock3Ptr->followerIndex)
+        gSaveBlock3Ptr->followerIndex = gPartyMenu.slotId2;
+    else if (gPartyMenu.slotId2 == gSaveBlock3Ptr->followerIndex)
+        gSaveBlock3Ptr->followerIndex = gPartyMenu.slotId;
     *monBuffer = *mon1;
     *mon1 = *mon2;
     *mon2 = *monBuffer;
@@ -3526,6 +3646,17 @@ static void CursorCb_Cancel1(u8 taskId)
     PlaySE(SE_SELECT);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+    if (sPartyMenuInternal->returnToActionMenu)
+    {
+        sPartyMenuInternal->returnToActionMenu = FALSE;
+        SetPartyMonSelectionActions(gParties[B_TRAINER_PLAYER], gPartyMenu.slotId, ACTIONS_NONE);
+        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+        DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
+        gTasks[taskId].data[0] = 0xFF;
+        gTasks[taskId].func = Task_HandleSelectionMenuInput;
+        return;
+    }
+
     if (gPartyMenu.menuType == PARTY_MENU_TYPE_DAYCARE)
         DisplayPartyMenuStdMessage(PARTY_MSG_CHOOSE_MON_2);
     else
@@ -8404,6 +8535,7 @@ static void CursorCb_LearnMovesSubMenu(u8 taskId)
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
     SetPartyMonSelectionActions(gParties[B_TRAINER_PLAYER], gPartyMenu.slotId, ACTIONS_MOVES_SUB);
+    sPartyMenuInternal->returnToActionMenu = TRUE;
     DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
     DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
     gTasks[taskId].data[0] = 0xFF;
@@ -8416,6 +8548,7 @@ static void CursorCb_FieldMovesSubMenu(u8 taskId)
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
     SetPartyMonSelectionActions(gParties[B_TRAINER_PLAYER], gPartyMenu.slotId, ACTIONS_FIELD_MOVES_SUB);
+    sPartyMenuInternal->returnToActionMenu = TRUE;
     DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
     DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
     gTasks[taskId].data[0] = 0xFF;

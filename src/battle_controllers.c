@@ -2002,7 +2002,9 @@ static void SetBattlerMonData(enum BattlerId battler, struct Pokemon *party, u32
 static bool8 ShouldDoSlideInAnim(enum BattlerId battler)
 {
     struct ObjectEvent *followerObj = GetFollowerObject();
-    if (!followerObj || followerObj->invisible)
+    if (!followerObj
+     || followerObj->invisible
+     || (gSaveBlock3Ptr->followerIndex > 0 && gSaveBlock3Ptr->followerIndex < PARTY_SIZE && gPlayerParty[gSaveBlock3Ptr->followerIndex].hp > 0))
         return FALSE;
 
     if (gBattleTypeFlags & (

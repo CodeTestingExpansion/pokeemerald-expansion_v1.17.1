@@ -258,6 +258,14 @@ static void StorePokemonInEmptyDaycareSlot(struct Pokemon *mon, struct DayCare *
 void StoreSelectedPokemonInDaycare(void)
 {
     struct Pokemon *mon;
+
+    u8 monId = GetCursorSelectionMonId();
+
+    if (gSaveBlock3Ptr->followerIndex == monId)
+        gSaveBlock3Ptr->followerIndex = OW_FOLLOWER_NOT_SET;
+    else if (gSaveBlock3Ptr->followerIndex < PARTY_SIZE && monId < gSaveBlock3Ptr->followerIndex)
+        gSaveBlock3Ptr->followerIndex--;
+
     if (gSpecialVar_0x8004 == PC_MON_CHOSEN)
     {
         mon = Alloc(sizeof(struct Pokemon));
