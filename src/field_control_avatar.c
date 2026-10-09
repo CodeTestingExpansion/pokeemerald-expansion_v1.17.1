@@ -84,6 +84,7 @@ static void SetMsgSignPostAndVarFacing(enum Direction playerDirection);
 static void SetUpWalkIntoSignScript(const u8 *script, enum Direction playerDirection);
 static u32 GetFacingSignpostType(u16 metatileBehvaior, enum Direction direction);
 static const u8 *GetSignpostScriptAtMapPosition(struct MapPosition *position);
+static bool8 EnableAutoRun(void);
 
 void FieldClearPlayerInput(struct FieldInput *input)
 {
@@ -96,6 +97,7 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->tookStep = FALSE;
     input->pressedBButton = FALSE;
     input->pressedRButton = FALSE;
+    input->pressedLButton = FALSE;
     input->input_field_1_1 = FALSE;
     input->input_field_1_2 = FALSE;
     input->input_field_1_3 = FALSE;
@@ -122,6 +124,8 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
                 input->pressedBButton = TRUE;
             if (newKeys & R_BUTTON)
                 input->pressedRButton = TRUE;
+            if (newKeys & L_BUTTON)
+                input->pressedLButton = TRUE;
         }
 
         if (heldKeys & (DPAD_UP | DPAD_DOWN | DPAD_LEFT | DPAD_RIGHT))
@@ -254,6 +258,9 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         TrySpecialOverworldEvo(); // Special vars set in CanTriggerSpinEvolution.
         return TRUE;
     }
+
+    if (input->pressedLButton && EnableAutoRun())
+        return TRUE;
 
     return FALSE;
 }
@@ -1428,4 +1435,22 @@ void HandleBoulderActivateVictoryRoadSwitch(u16 x, u16 y)
             }
         }
     }
+}
+
+extern const u8 EventScript_DisableAutoRun[];
+extern const u8 EventScript_EnableAutoRun[];
+
+static bool8 EnableAutoRun(void)
+{
+    if (!FlagGet(FLAG_SYS_B_DASH))
+        return FALSE;
+
+    PlaySE(SE_SELECT);
+    gSaveBlock3Ptr->autoRun = !gSaveBlock3Ptr->autoRun;
+    if (gSaveBlock3Ptr->autoRun)
+        ScriptContext_SetupScript(EventScript_EnableAutoRun);
+    else
+        ScriptContext_SetupScript(EventScript_DisableAutoRun);
+
+    return TRUE;
 }

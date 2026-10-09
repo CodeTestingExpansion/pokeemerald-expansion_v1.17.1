@@ -212,6 +212,7 @@ void NewGameInitData(void)
     ResetLotteryCorner();
     UpdateDailySeed();
     WarpToTruck();
+    gSaveBlock3Ptr->autoRun = FALSE;
     if (IS_FRLG)
         RunScriptImmediately(EventScript_ResetAllMapFlagsFrlg);
     else

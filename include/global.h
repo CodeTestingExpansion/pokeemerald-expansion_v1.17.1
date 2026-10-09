@@ -273,6 +273,7 @@ struct SaveBlock3
     u8 apricornTrees[NUM_APRICORN_TREE_BYTES];
 #endif
     u8 followerIndex;
+    bool8 autoRun;
 }; /* max size 1624 bytes */
 
 extern struct SaveBlock3 *gSaveBlock3Ptr;
