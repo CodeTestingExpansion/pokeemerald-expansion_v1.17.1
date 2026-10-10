@@ -59,6 +59,7 @@
 #include "constants/rgb.h"
 #include "constants/region_map_sections.h"
 #include "gba/m4a_internal.h"
+#include "pokenav.h"
 
 #if DEXNAV_ENABLED
 STATIC_ASSERT(DN_FLAG_SEARCHING != 0, DNFlagSearching_Must_Not_Be_Zero);
@@ -2309,6 +2310,22 @@ void Task_OpenDexNavFromStartMenu(u8 taskId)
     {
         CleanupOverworldWindowsAndTilemaps();
         DexNavGuiInit(CB2_ReturnToFieldWithOpenMenu);
+        DestroyTask(taskId);
+    }
+}
+
+u32 PokeNavMenuDexNavCallback(void)
+{
+    CreateTask(Task_OpenDexNavFromPokenav, 0);
+    return TRUE;
+}
+
+void Task_OpenDexNavFromPokenav(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        DexNavGuiInit(CB2_InitPokeNav);
         DestroyTask(taskId);
     }
 }

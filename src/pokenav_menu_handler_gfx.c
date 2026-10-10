@@ -26,6 +26,7 @@
 #define PALTAG_OPTIONS_PINK 6
 #define PALTAG_OPTIONS_BEIGE 7
 #define PALTAG_OPTIONS_RED 8
+#define PALTAG_OPTIONS_CYAN 12
 
 #define PALTAG_OPTIONS_START PALTAG_OPTIONS_DEFAULT
 
@@ -59,8 +60,10 @@ static u32 LoopedTask_ReturnToMainMenu(s32);
 static u32 LoopedTask_OpenConditionSearchMenu(s32);
 static u32 LoopedTask_ReturnToConditionMenu(s32);
 static u32 LoopedTask_SelectRibbonsNoWinners(s32);
+static u32 LoopedTask_SelectDexNavNoPokemon(s32);
 static u32 LoopedTask_ReShowDescription(s32);
 static u32 LoopedTask_OpenPokenavFeature(s32);
+static u32 LoopedTask_OpenPokenavDexNav(s32);
 static void LoadPokenavOptionPalettes(void);
 static void FreeAndDestroyMainMenuSprites(void);
 static void CreateMenuOptionSprites(void);
@@ -83,6 +86,7 @@ static void DestroyRematchBlueLightSprite(void);
 static void AddOptionDescriptionWindow(void);
 static void PrintCurrentOptionDescription(void);
 static void PrintNoRibbonWinners(void);
+static void PrintNoWildPokemon(void);
 static bool32 IsDma3ManagerBusyWithBgCopy_(void);
 static void CreateMovingBgDotsTask(void);
 static void DestroyMovingDotsBgTask(void);
@@ -147,15 +151,17 @@ static const LoopedTask sMenuHandlerLoopTaskFuncs[] =
     [POKENAV_MENU_FUNC_OPEN_CONDITION_SEARCH] = LoopedTask_OpenConditionSearchMenu,
     [POKENAV_MENU_FUNC_RETURN_TO_CONDITION]   = LoopedTask_ReturnToConditionMenu,
     [POKENAV_MENU_FUNC_NO_RIBBON_WINNERS]     = LoopedTask_SelectRibbonsNoWinners,
+    [POKENAV_MENU_FUNC_NO_WILD_POKEMON]       = LoopedTask_SelectDexNavNoPokemon,
     [POKENAV_MENU_FUNC_RESHOW_DESCRIPTION]    = LoopedTask_ReShowDescription,
-    [POKENAV_MENU_FUNC_OPEN_FEATURE]          = LoopedTask_OpenPokenavFeature
+    [POKENAV_MENU_FUNC_OPEN_FEATURE]          = LoopedTask_OpenPokenavFeature,
+    [POKENAV_MENU_FUNC_OPEN_DEXNAV]           = LoopedTask_OpenPokenavDexNav
 };
 
 static const struct CompressedSpriteSheet sPokenavOptionsSpriteSheets[] =
 {
     {
         .data = gPokenavOptions_Gfx,
-        .size = 0x3400,
+        .size = 0x3800,
         .tag = GFXTAG_OPTIONS
     },
     {
@@ -172,24 +178,26 @@ static const struct SpritePalette sPokenavOptionsSpritePalettes[] =
     {&gPokenavOptions_Pal[0x20], PALTAG_OPTIONS_PINK},
     {&gPokenavOptions_Pal[0x30], PALTAG_OPTIONS_BEIGE},
     {&gPokenavOptions_Pal[0x40], PALTAG_OPTIONS_RED},
+    {&gPokenavOptions_Pal[0x50], PALTAG_OPTIONS_CYAN},
     {sMatchCallBlueLightPal, PALTAG_BLUE_LIGHT},
     {}
 };
 
 // Tile number, palette tag offset
 static const u16 sOptionsLabelGfx_RegionMap[] = {0x000, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Condition[] = {0x020, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_MatchCall[] = {0x040, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Ribbons[]   = {0x060, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_SwitchOff[] = {0x080, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Party[]     = {0x0A0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Search[]    = {0x0C0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cool[]      = {0x0E0, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Beauty[]    = {0x100, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cute[]      = {0x120, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Smart[]     = {0x140, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Tough[]     = {0x160, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
-static const u16 sOptionsLabelGfx_Cancel[]    = {0x180, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_DexNav[]    = {0x020, PALTAG_OPTIONS_CYAN - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Condition[] = {0x040, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_MatchCall[] = {0x060, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Ribbons[]   = {0x080, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_SwitchOff[] = {0x0A0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Party[]     = {0x0C0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Search[]    = {0x0E0, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cool[]      = {0x100, PALTAG_OPTIONS_RED - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Beauty[]    = {0x120, PALTAG_OPTIONS_BLUE - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cute[]      = {0x140, PALTAG_OPTIONS_PINK - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Smart[]     = {0x160, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Tough[]     = {0x180, PALTAG_OPTIONS_DEFAULT - PALTAG_OPTIONS_START};
+static const u16 sOptionsLabelGfx_Cancel[]    = {0x1A0, PALTAG_OPTIONS_BEIGE - PALTAG_OPTIONS_START};
 
 struct
 {
@@ -204,6 +212,7 @@ struct
         .deltaY = 20,
         .gfx = {
             sOptionsLabelGfx_RegionMap,
+            sOptionsLabelGfx_DexNav,
             sOptionsLabelGfx_Condition,
             sOptionsLabelGfx_SwitchOff
         }
@@ -214,6 +223,7 @@ struct
         .deltaY = 20,
         .gfx = {
             sOptionsLabelGfx_RegionMap,
+            sOptionsLabelGfx_DexNav,
             sOptionsLabelGfx_Condition,
             sOptionsLabelGfx_MatchCall,
             sOptionsLabelGfx_SwitchOff
@@ -221,10 +231,11 @@ struct
     },
     [POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS] =
     {
-        .yStart = 42,
-        .deltaY = 20,
+        .yStart = 40,
+        .deltaY = 17,
         .gfx = {
             sOptionsLabelGfx_RegionMap,
+            sOptionsLabelGfx_DexNav,
             sOptionsLabelGfx_Condition,
             sOptionsLabelGfx_MatchCall,
             sOptionsLabelGfx_Ribbons,
@@ -270,6 +281,7 @@ static const struct WindowTemplate sOptionDescWindowTemplate =
 static const u8 *const sPageDescriptions[] =
 {
     [POKENAV_MENUITEM_MAP]                     = COMPOUND_STRING("Check the map of the HOENN region"),
+    [POKENAV_MENUITEM_DEXNAV]                  = gText_DexNavDescription,
     [POKENAV_MENUITEM_CONDITION]               = COMPOUND_STRING("Check POKéMON in detail."),
     [POKENAV_MENUITEM_MATCH_CALL]              = COMPOUND_STRING("Call a registered TRAINER."),
     [POKENAV_MENUITEM_RIBBONS]                 = COMPOUND_STRING("Check obtained RIBBONS."),
@@ -728,6 +740,22 @@ static u32 LoopedTask_SelectRibbonsNoWinners(s32 state)
     return LT_FINISH;
 }
 
+static u32 LoopedTask_SelectDexNavNoPokemon(s32 state)
+{
+    switch (state)
+    {
+    case 0:
+        PlaySE(SE_FAILURE);
+        PrintNoWildPokemon();
+        return LT_INC_AND_PAUSE;
+    case 1:
+        if (IsDma3ManagerBusyWithBgCopy())
+            return LT_PAUSE;
+        break;
+    }
+    return LT_FINISH;
+}
+
 // For redisplaying the Ribbons description to replace the No Ribbon Winners message
 static u32 LoopedTask_ReShowDescription(s32 state)
 {
@@ -788,6 +816,48 @@ static u32 LoopedTask_OpenPokenavFeature(s32 state)
     return LT_FINISH;
 }
 
+// For selecting a feature option from a menu, e.g. the Map, Match Call, Beauty search, etc.
+static u32 LoopedTask_OpenPokenavDexNav(s32 state)
+{
+    switch (state)
+    {
+    case 0:
+        PrintHelpBarText(GetHelpBarTextId());
+        return LT_INC_AND_PAUSE;
+    case 1:
+        if (WaitForHelpBar())
+            return LT_PAUSE;
+        ResetBldCnt();
+        StartOptionAnimations_Exit();
+        switch (GetPokenavMenuType())
+        {
+        case POKENAV_MENU_TYPE_CONDITION_SEARCH:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_SEARCH_MENU, FALSE);
+            // fallthrough
+        case POKENAV_MENU_TYPE_CONDITION:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_CONDITION_MENU, FALSE);
+            break;
+        default:
+            HideMainOrSubMenuLeftHeader(POKENAV_GFX_MAIN_MENU, FALSE);
+            break;
+        }
+        PlaySE(SE_SELECT);
+        return LT_INC_AND_PAUSE;
+    case 2:
+        if (AreMenuOptionSpritesMoving())
+            return LT_PAUSE;
+        if (AreLeftHeaderSpritesMoving())
+            return LT_PAUSE;
+        PokenavFadeScreen(POKENAV_FADE_TO_BLACK_ALL);
+        return LT_INC_AND_PAUSE;
+    case 3:
+        if (IsPaletteFadeActive())
+            return LT_PAUSE;
+        break;
+    }
+    return LT_FINISH;
+}
+
 static void LoadPokenavOptionPalettes(void)
 {
     s32 i;
@@ -806,6 +876,7 @@ static void FreeAndDestroyMainMenuSprites(void)
     FreeSpritePaletteByTag(PALTAG_OPTIONS_PINK);
     FreeSpritePaletteByTag(PALTAG_OPTIONS_BEIGE);
     FreeSpritePaletteByTag(PALTAG_OPTIONS_RED);
+    FreeSpritePaletteByTag(PALTAG_OPTIONS_CYAN);
     FreeSpritePaletteByTag(PALTAG_BLUE_LIGHT);
     DestroyMenuOptionSprites();
     DestroyRematchBlueLightSprite();
@@ -1233,6 +1304,15 @@ static void PrintNoRibbonWinners(void)
 {
     struct Pokenav_MenuGfx *gfx = GetSubstructPtr(POKENAV_SUBSTRUCT_MENU_GFX);
     const u8 *s = gText_NoRibbonWinners;
+    u32 width = GetStringWidth(FONT_NORMAL, s, -1);
+    FillWindowPixelBuffer(gfx->optionDescWindowId, PIXEL_FILL(6));
+    AddTextPrinterParameterized3(gfx->optionDescWindowId, FONT_NORMAL, (192 - width) / 2, 1, sOptionDescTextColors2, 0, s);
+}
+
+static void PrintNoWildPokemon(void)
+{
+    struct Pokenav_MenuGfx * gfx = GetSubstructPtr(POKENAV_SUBSTRUCT_MENU_GFX);
+    const u8 *s = gText_DexNavNoEncounters;
     u32 width = GetStringWidth(FONT_NORMAL, s, -1);
     FillWindowPixelBuffer(gfx->optionDescWindowId, PIXEL_FILL(6));
     AddTextPrinterParameterized3(gfx->optionDescWindowId, FONT_NORMAL, (192 - width) / 2, 1, sOptionDescTextColors2, 0, s);
