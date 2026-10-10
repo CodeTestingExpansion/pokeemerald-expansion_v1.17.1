@@ -188,6 +188,7 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     s16 switchCounter; // Used for various switch statement cases that decompress/load graphics or Pokémon data
     u8 unk_filler4[6];
     u8 categoryIconSpriteId;
+    u8 friendshipMeterSpriteId;
 } *sMonSummaryScreen = NULL;
 
 EWRAM_DATA u8 gLastViewedMonIndex = 0;
@@ -309,6 +310,11 @@ static void CreateMonMarkingsSprite(struct Pokemon *);
 static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *);
 static void CreateCaughtBallSprite(struct Pokemon *);
 static void CreateSetStatusSprite(void);
+#if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+static void CreateFriendshipMeterSprite(void);
+static void UpdateFriendshipMeterSprite(void);
+static void DestroyFriendshipMeterSprite(void);
+#endif
 static void CreateMoveSelectorSprites(u8);
 static void SpriteCB_MoveSelector(struct Sprite *);
 static void DestroyMoveSelectorSprites(u8);
@@ -781,6 +787,18 @@ static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
 #define TAG_MOVE_TYPES 30002
 #define TAG_MON_MARKINGS 30003
 #define TAG_CATEGORY_ICONS 30004
+#define TAG_FRIENDSHIP_METER 30005
+
+enum
+{
+    FRIENDSHIP_LEVEL_0 = 0,
+    FRIENDSHIP_LEVEL_1 = 44,
+    FRIENDSHIP_LEVEL_2 = 88,
+    FRIENDSHIP_LEVEL_3 = 132,
+    FRIENDSHIP_LEVEL_4 = 176,
+    FRIENDSHIP_LEVEL_5 = 220,
+    FRIENDSHIP_LEVEL_MAX = MAX_FRIENDSHIP,
+};
 
 static const struct OamData sOamData_CategoryIcons =
 {
@@ -835,6 +853,95 @@ const struct SpriteTemplate gSpriteTemplate_CategoryIcons =
     .oam = &sOamData_CategoryIcons,
     .anims = sSpriteAnimTable_CategoryIcons,
 };
+
+#if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+#define FRIENDSHIP_METER_FRAME_COUNT 7
+
+static const union AnimCmd sSpriteAnim_FriendshipMeter0[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter1[] =
+{
+    ANIMCMD_FRAME(1, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter2[] =
+{
+    ANIMCMD_FRAME(2, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter3[] =
+{
+    ANIMCMD_FRAME(3, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter4[] =
+{
+    ANIMCMD_FRAME(4, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter5[] =
+{
+    ANIMCMD_FRAME(5, 0),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_FriendshipMeter6[] =
+{
+    ANIMCMD_FRAME(6, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_FriendshipMeter[] =
+{
+    sSpriteAnim_FriendshipMeter0,
+    sSpriteAnim_FriendshipMeter1,
+    sSpriteAnim_FriendshipMeter2,
+    sSpriteAnim_FriendshipMeter3,
+    sSpriteAnim_FriendshipMeter4,
+    sSpriteAnim_FriendshipMeter5,
+    sSpriteAnim_FriendshipMeter6,
+};
+
+static const struct OamData sOamData_FriendshipMeter =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(8x8),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(8x8),
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const struct CompressedSpriteSheet sFriendshipMeterSpriteSheet =
+{
+    .data = gSummaryScreenFriendshipMeter_Gfx,
+    .size = 8 * 8 * FRIENDSHIP_METER_FRAME_COUNT / 2,
+    .tag = TAG_FRIENDSHIP_METER,
+};
+
+static const struct SpritePalette sFriendshipMeterSpritePalette =
+{
+    .data = gSummaryScreenFriendshipMeter_Pal,
+    .tag = TAG_FRIENDSHIP_METER,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_FriendshipMeter =
+{
+    .tileTag = TAG_FRIENDSHIP_METER,
+    .paletteTag = TAG_FRIENDSHIP_METER,
+    .oam = &sOamData_FriendshipMeter,
+    .anims = sSpriteAnimTable_FriendshipMeter,
+};
+#endif
 
 static const struct OamData sOamData_MoveTypes =
 {
@@ -1245,6 +1352,9 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
         sMonSummaryScreen->currPageIndex = sMonSummaryScreen->minPageIndex;
 
     sMonSummaryScreen->categoryIconSpriteId = 0xFF;
+    #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+    sMonSummaryScreen->friendshipMeterSpriteId = 0xFF;
+    #endif
     SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
 
     if (gMonSpritesGfxPtr == NULL)
@@ -1381,6 +1491,9 @@ static bool8 LoadGraphics(void)
         break;
     case 20:
         CreateSetStatusSprite();
+        #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+        CreateFriendshipMeterSprite();
+        #endif
         gMain.state++;
         break;
     case 21:
@@ -1490,7 +1603,10 @@ static bool8 DecompressGraphics(void)
     case 12:
         LoadPalette(gMoveTypes_Pal, OBJ_PLTT_ID(13), 3 * PLTT_SIZE_4BPP);
         LoadCompressedSpriteSheet(&gSpriteSheet_CategoryIcons);
-        LoadSpritePalette(&gSpritePal_CategoryIcons);
+        #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+        LoadCompressedSpriteSheet(&sFriendshipMeterSpriteSheet);
+        LoadSpritePalette(&sFriendshipMeterSpritePalette);
+        #endif
         sMonSummaryScreen->switchCounter = 0;
         return TRUE;
     }
@@ -1651,6 +1767,9 @@ static void CloseSummaryScreen(u8 taskId)
         SetMainCallback2(sMonSummaryScreen->callback);
         gLastViewedMonIndex = sMonSummaryScreen->curMonIndex;
         SummaryScreen_DestroyAnimDelayTask();
+        #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+        DestroyFriendshipMeterSprite();
+        #endif
         ResetSpriteData();
         FreeAllSpritePalettes();
         StopCryAndClearCrySongs();
@@ -2163,7 +2282,12 @@ static void ChangePage(u8 taskId, s8 delta)
         SetTaskFuncWithFollowupFunc(taskId, PssScrollLeft, gTasks[taskId].func);
     CreateTextPrinterTask(currPageIndex);
     HidePageSpecificSprites();
-
+    #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+    if (sMonSummaryScreen->friendshipMeterSpriteId != 0xFF)
+    {
+        UpdateFriendshipMeterSprite();
+    }
+    #endif
     if (currPageIndex == PSS_PAGE_SKILLS
         || (currPageIndex + delta) == PSS_PAGE_SKILLS)
     {
@@ -3180,6 +3304,9 @@ static void PrintMonInfo(void)
         PrintNotEggInfo();
     else
         PrintEggInfo();
+    #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+    UpdateFriendshipMeterSprite();
+    #endif    
     ScheduleBgCopyTilemapToVram(0);
 }
 
@@ -4650,6 +4777,51 @@ static void CreateSetStatusSprite(void)
         SetSpriteInvisibility(SPRITE_ARR_ID_STATUS, TRUE);
     }
 }
+
+#if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+static void CreateFriendshipMeterSprite(void)
+{
+    if (sMonSummaryScreen->friendshipMeterSpriteId == 0xFF)
+        sMonSummaryScreen->friendshipMeterSpriteId = CreateSprite(&sSpriteTemplate_FriendshipMeter, 12, 37, 0);    else
+        gSprites[sMonSummaryScreen->friendshipMeterSpriteId].invisible = FALSE;
+
+    UpdateFriendshipMeterSprite();
+}
+
+static void UpdateFriendshipMeterSprite(void)
+{
+    if (sMonSummaryScreen->friendshipMeterSpriteId == 0xFF)
+        return;
+
+    u16 friendship = sMonSummaryScreen->summary.friendship;
+    u8 frame = 0;
+
+    if (friendship >= FRIENDSHIP_LEVEL_MAX)
+        frame = 6;
+    else if (friendship >= FRIENDSHIP_LEVEL_5)
+        frame = 5;
+    else if (friendship >= FRIENDSHIP_LEVEL_4)
+        frame = 4;
+    else if (friendship >= FRIENDSHIP_LEVEL_3)
+        frame = 3;
+    else if (friendship >= FRIENDSHIP_LEVEL_2)
+        frame = 2;
+    else if (friendship >= FRIENDSHIP_LEVEL_1)
+        frame = 1;
+
+    StartSpriteAnim(&gSprites[sMonSummaryScreen->friendshipMeterSpriteId], frame);
+}
+
+static void DestroyFriendshipMeterSprite(void)
+{
+    if (sMonSummaryScreen->friendshipMeterSpriteId != 0xFF)
+    {
+        DestroySprite(&gSprites[sMonSummaryScreen->friendshipMeterSpriteId]);
+        FreeSpriteTilesByTag(TAG_FRIENDSHIP_METER);
+        sMonSummaryScreen->friendshipMeterSpriteId = 0xFF;
+    }
+}
+#endif
 
 static void CreateMoveSelectorSprites(u8 idArrayStart)
 {

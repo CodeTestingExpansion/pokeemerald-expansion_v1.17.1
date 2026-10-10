@@ -2135,3 +2135,8 @@ const u16 gBattleIcons_Pal2[] = INCGFX_U16("graphics/types/battle_icons2.pal", "
 
 const u16 gGhostPalette[] = INCGFX_U16("graphics/pokemon/ghost/front.png", ".gbapal");
 const u32 gGhostFrontPic[] = INCGFX_U32("graphics/pokemon/ghost/front.png", ".4bpp.smol");
+
+#if P_SUMMARY_SCREEN_FRIENDSHIP_METER
+const u32 gSummaryScreenFriendshipMeter_Gfx[] = INCGFX_U32("graphics/summary_screen/friendship_meter.png", ".4bpp.smol");
+const u16 gSummaryScreenFriendshipMeter_Pal[] = INCGFX_U16("graphics/summary_screen/friendship_meter.png", ".gbapal");
+#endif
