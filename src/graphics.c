@@ -2140,3 +2140,8 @@ const u32 gGhostFrontPic[] = INCGFX_U32("graphics/pokemon/ghost/front.png", ".4b
 const u32 gSummaryScreenFriendshipMeter_Gfx[] = INCGFX_U32("graphics/summary_screen/friendship_meter.png", ".4bpp.smol");
 const u16 gSummaryScreenFriendshipMeter_Pal[] = INCGFX_U16("graphics/summary_screen/friendship_meter.png", ".gbapal");
 #endif
+
+#if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+const u32 gSummaryScreenGigantamaxFactor_Gfx[] = INCGFX_U32("graphics/summary_screen/GigantamaxSummaryScreenIcon.png", ".4bpp.smol");
+const u16 gSummaryScreenGigantamaxFactor_Pal[] = INCGFX_U16("graphics/summary_screen/GigantamaxSummaryScreenIcon.png", ".gbapal");
+#endif

@@ -189,6 +189,9 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     u8 unk_filler4[6];
     u8 categoryIconSpriteId;
     u8 friendshipMeterSpriteId;
+    #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+    u8 gigantamaxFactorSpriteId;
+    #endif
 } *sMonSummaryScreen = NULL;
 
 EWRAM_DATA u8 gLastViewedMonIndex = 0;
@@ -314,6 +317,11 @@ static void CreateSetStatusSprite(void);
 static void CreateFriendshipMeterSprite(void);
 static void UpdateFriendshipMeterSprite(void);
 static void DestroyFriendshipMeterSprite(void);
+#endif
+#if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+static void CreateGigantamaxFactorSprite(void);
+static void UpdateGigantamaxFactorSprite(void);
+static void DestroyGigantamaxFactorSprite(void);
 #endif
 static void CreateMoveSelectorSprites(u8);
 static void SpriteCB_MoveSelector(struct Sprite *);
@@ -788,6 +796,7 @@ static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
 #define TAG_MON_MARKINGS 30003
 #define TAG_CATEGORY_ICONS 30004
 #define TAG_FRIENDSHIP_METER 30005
+#define TAG_GIGANTAMAX_FACTOR 30006
 
 enum
 {
@@ -940,6 +949,57 @@ static const struct SpriteTemplate sSpriteTemplate_FriendshipMeter =
     .paletteTag = TAG_FRIENDSHIP_METER,
     .oam = &sOamData_FriendshipMeter,
     .anims = sSpriteAnimTable_FriendshipMeter,
+};
+#endif
+
+#if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+static const union AnimCmd sSpriteAnim_GigantamaxFactor[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_GigantamaxFactor[] =
+{
+    sSpriteAnim_GigantamaxFactor,
+};
+
+static const struct OamData sOamData_GigantamaxFactor =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(16x16),
+    .tileNum = 0,
+    .priority = 0,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const struct CompressedSpriteSheet sGigantamaxFactorSpriteSheet =
+{
+    .data = gSummaryScreenGigantamaxFactor_Gfx,
+    .size = 16 * 16 * 1 / 2, // 16x16, 1 frame, 4bpp
+    .tag = TAG_GIGANTAMAX_FACTOR,
+};
+
+static const struct SpritePalette sGigantamaxFactorSpritePalette =
+{
+    .data = gSummaryScreenGigantamaxFactor_Pal,
+    .tag = TAG_GIGANTAMAX_FACTOR,
+};
+
+static const struct SpriteTemplate sSpriteTemplate_GigantamaxFactor =
+{
+    .tileTag = TAG_GIGANTAMAX_FACTOR,
+    .paletteTag = TAG_GIGANTAMAX_FACTOR,
+    .oam = &sOamData_GigantamaxFactor,
+    .anims = sSpriteAnimTable_GigantamaxFactor,
 };
 #endif
 
@@ -1355,6 +1415,9 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
     #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
     sMonSummaryScreen->friendshipMeterSpriteId = 0xFF;
     #endif
+    #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+    sMonSummaryScreen->gigantamaxFactorSpriteId = 0xFF;
+    #endif 
     SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
 
     if (gMonSpritesGfxPtr == NULL)
@@ -1494,6 +1557,9 @@ static bool8 LoadGraphics(void)
         #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
         CreateFriendshipMeterSprite();
         #endif
+        #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+        CreateGigantamaxFactorSprite();
+        #endif
         gMain.state++;
         break;
     case 21:
@@ -1606,6 +1672,10 @@ static bool8 DecompressGraphics(void)
         #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
         LoadCompressedSpriteSheet(&sFriendshipMeterSpriteSheet);
         LoadSpritePalette(&sFriendshipMeterSpritePalette);
+        #endif
+        #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+        LoadCompressedSpriteSheet(&sGigantamaxFactorSpriteSheet);
+        LoadSpritePalette(&sGigantamaxFactorSpritePalette);
         #endif
         sMonSummaryScreen->switchCounter = 0;
         return TRUE;
@@ -1769,6 +1839,9 @@ static void CloseSummaryScreen(u8 taskId)
         SummaryScreen_DestroyAnimDelayTask();
         #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
         DestroyFriendshipMeterSprite();
+        #endif
+        #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+        DestroyGigantamaxFactorSprite();
         #endif
         ResetSpriteData();
         FreeAllSpritePalettes();
@@ -2286,6 +2359,15 @@ static void ChangePage(u8 taskId, s8 delta)
     if (sMonSummaryScreen->friendshipMeterSpriteId != 0xFF)
     {
         UpdateFriendshipMeterSprite();
+    }
+    #endif
+    #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+    if (sMonSummaryScreen->gigantamaxFactorSpriteId != 0xFF)
+    {
+        if (currPageIndex == PSS_PAGE_INFO)
+            UpdateGigantamaxFactorSprite();
+        else
+            gSprites[sMonSummaryScreen->gigantamaxFactorSpriteId].invisible = TRUE;
     }
     #endif
     if (currPageIndex == PSS_PAGE_SKILLS
@@ -3306,6 +3388,9 @@ static void PrintMonInfo(void)
         PrintEggInfo();
     #if P_SUMMARY_SCREEN_FRIENDSHIP_METER
     UpdateFriendshipMeterSprite();
+    #endif
+    #if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+    UpdateGigantamaxFactorSprite();
     #endif    
     ScheduleBgCopyTilemapToVram(0);
 }
@@ -4819,6 +4904,37 @@ static void DestroyFriendshipMeterSprite(void)
         DestroySprite(&gSprites[sMonSummaryScreen->friendshipMeterSpriteId]);
         FreeSpriteTilesByTag(TAG_FRIENDSHIP_METER);
         sMonSummaryScreen->friendshipMeterSpriteId = 0xFF;
+    }
+}
+#endif
+
+#if P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR
+static void CreateGigantamaxFactorSprite(void)
+{
+    if (sMonSummaryScreen->gigantamaxFactorSpriteId == 0xFF)
+        sMonSummaryScreen->gigantamaxFactorSpriteId = CreateSprite(&sSpriteTemplate_GigantamaxFactor, 232, 26, 0);
+    else
+        gSprites[sMonSummaryScreen->gigantamaxFactorSpriteId].invisible = FALSE;
+
+    UpdateGigantamaxFactorSprite();
+}
+
+static void UpdateGigantamaxFactorSprite(void)
+{
+    if (sMonSummaryScreen->gigantamaxFactorSpriteId == 0xFF)
+        return;
+
+    bool32 hasFactor = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_GIGANTAMAX_FACTOR);
+    gSprites[sMonSummaryScreen->gigantamaxFactorSpriteId].invisible = (sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO) || !hasFactor;
+}
+
+static void DestroyGigantamaxFactorSprite(void)
+{
+    if (sMonSummaryScreen->gigantamaxFactorSpriteId != 0xFF)
+    {
+        DestroySprite(&gSprites[sMonSummaryScreen->gigantamaxFactorSpriteId]);
+        FreeSpriteTilesByTag(TAG_GIGANTAMAX_FACTOR);
+        sMonSummaryScreen->gigantamaxFactorSpriteId = 0xFF;
     }
 }
 #endif

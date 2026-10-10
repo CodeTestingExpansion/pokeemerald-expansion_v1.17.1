@@ -3442,4 +3442,7 @@ extern const u16 gGhostPalette[];
 extern const u32 gSummaryScreenFriendshipMeter_Gfx[];
 extern const u16 gSummaryScreenFriendshipMeter_Pal[];
 
+extern const u32 gSummaryScreenGigantamaxFactor_Gfx[];
+extern const u16 gSummaryScreenGigantamaxFactor_Pal[];
+
 #endif //GUARD_GRAPHICS_H

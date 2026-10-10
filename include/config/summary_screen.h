@@ -4,7 +4,8 @@
 // Settings
 #define P_SUMMARY_SCREEN_NATURE_COLORS   TRUE   // If TRUE, nature-based stat boosts and reductions will be red and blue in the summary screen.
 #define P_SUMMARY_SCREEN_RENAME          TRUE   // If TRUE, an option to change Pokémon nicknames replaces the cancel prompt on the summary screen info page.
-#define P_SUMMARY_SCREEN_FRIENDSHIP_METER TRUE   // If TRUE, shows a friendship indicator on the summary screen info page.
+#define P_SUMMARY_SCREEN_FRIENDSHIP_METER TRUE   // If TRUE, shows a friendship indicator in the summary screen info page.
+#define P_SUMMARY_SCREEN_GIGANTAMAX_FACTOR TRUE // If TRUE, shows a Gigantamax factor indicator in the summary screen info page.
 
 // IV/EV settings
 #define P_SUMMARY_SCREEN_IV_EV_INFO      TRUE  // If TRUE, will allow player to cycle through the Stats, IVs, and EVs in the summary screen skills page.
