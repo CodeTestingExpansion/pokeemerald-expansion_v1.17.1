@@ -1985,6 +1985,13 @@
 	.4byte \msg
 	.endm
 
+	@ Writes the name of the given region to the specified buffer.
+	.macro bufferregionname stringVarId:req, region:req
+	.byte 0xe7
+	stringvar \stringVarId
+	.2byte \region
+	.endm
+
 	.macro goto_if_unset flag:req, dest:req
 	checkflag \flag
 	goto_if FALSE, \dest

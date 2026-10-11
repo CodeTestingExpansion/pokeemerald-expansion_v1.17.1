@@ -23,6 +23,7 @@
 #include "window.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "constants/starter_choose.h"
 
 #define STARTER_MON_COUNT   3
 
@@ -59,6 +60,23 @@ const u32 gBirchGrassTilemap[] = INCGFX_U32("graphics/starter_choose/birch_grass
 const u32 gBirchBagGrass_Gfx[] = INCGFX_U32("graphics/starter_choose/tiles.png", ".4bpp.smol");
 const u32 gPokeballSelection_Gfx[] = INCGFX_U32("graphics/starter_choose/pokeball_selection.png", ".4bpp.smol");
 static const u32 sStarterCircle_Gfx[] = INCGFX_U32("graphics/starter_choose/starter_circle.png", ".4bpp.smol");
+
+const u8 gRegionNames[REGION_COUNT][REGION_MAX_NAME_LENGTH + 1] = {
+    [REGION_KANTO]  = _("KANTO"),
+    [REGION_JOHTO]  = _("JOHTO"),
+    [REGION_HOENN]  = _("HOENN"),
+    [REGION_SINNOH] = _("SINNOH"),
+    [REGION_UNOVA]  = _("UNOVA"),
+    [REGION_KALOS]  = _("KALOS"),
+    [REGION_ALOLA]  = _("ALOLA"),
+    [REGION_GALAR]  = _("GALAR"),
+    [REGION_PALDEA]  = _("PALDEA"),
+};
+
+const u8 *GetRegionName(u16 region)
+{
+    return gRegionNames[region];
+}
 
 static const struct WindowTemplate sWindowTemplates[] =
 {
@@ -114,11 +132,62 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
 #define FIRE_STARTER  (IS_FRLG ? SPECIES_CHARMANDER : SPECIES_TORCHIC)
 #define WATER_STARTER (IS_FRLG ? SPECIES_SQUIRTLE   : SPECIES_MUDKIP )
 
-static const u16 sStarterMon[STARTER_MON_COUNT] =
+static const u16 sStarterMon[REGION_COUNT][STARTER_MON_COUNT] = 
 {
-    GRASS_STARTER,
-    FIRE_STARTER,
-    WATER_STARTER,
+    [REGION_KANTO] =
+    {
+        SPECIES_BULBASAUR,
+        SPECIES_CHARMANDER,
+        SPECIES_SQUIRTLE
+    },
+    [REGION_JOHTO] =
+    {
+        SPECIES_CHIKORITA,
+        SPECIES_CYNDAQUIL,
+        SPECIES_TOTODILE
+    },
+    [REGION_HOENN] = 
+    {
+        SPECIES_TREECKO,
+        SPECIES_TORCHIC,
+        SPECIES_MUDKIP,
+    },
+    [REGION_SINNOH] = 
+    {
+        SPECIES_TURTWIG,
+        SPECIES_CHIMCHAR,
+        SPECIES_PIPLUP
+    },
+    [REGION_UNOVA] = 
+    {
+        SPECIES_SNIVY,
+        SPECIES_TEPIG,
+        SPECIES_OSHAWOTT
+    },
+    [REGION_KALOS] = 
+    {
+        SPECIES_CHESPIN,
+        SPECIES_FENNEKIN,
+        SPECIES_FROAKIE
+    },
+    [REGION_ALOLA] = 
+    {
+        SPECIES_ROWLET,
+        SPECIES_LITTEN,
+        SPECIES_POPPLIO
+    },
+    [REGION_GALAR] = 
+    {
+        SPECIES_GROOKEY,
+        SPECIES_SCORBUNNY,
+        SPECIES_SOBBLE
+    },
+    [REGION_PALDEA] = 
+    {
+        SPECIES_SPRIGATITO,
+        SPECIES_FUECOCO,
+        SPECIES_QUAXLY
+    }
 };
 
 static const struct BgTemplate sBgTemplates[3] =
@@ -351,7 +420,7 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
-    return sStarterMon[chosenStarterId];
+    return sStarterMon[VarGet(VAR_REGION_CHOICE)][chosenStarterId];
 }
 
 static void VblankCB_StarterChoose(void)
