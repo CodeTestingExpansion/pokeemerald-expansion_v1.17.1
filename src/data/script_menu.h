@@ -626,8 +626,56 @@ static const struct MenuAction MultichoiceList_UnusedSSTidal4[] =
 
 static const struct MenuAction MultichoiceList_Fossil[] =
 {
-    {COMPOUND_STRING("CLAW FOSSIL")},
-    {COMPOUND_STRING("ROOT FOSSIL")},
+    {COMPOUND_STRING("KANTO FOSSILS")},
+    {COMPOUND_STRING("HOENN FOSSILS")},
+    {COMPOUND_STRING("SINNOH FOSSILS")},
+    {COMPOUND_STRING("UNOVA FOSSILS")},
+    {COMPOUND_STRING("KALOS FOSSILS")},
+    {COMPOUND_STRING("GALAR FOSSILS")},
+};
+
+static const struct MenuAction MultichoiceList_FossilKanto[] =
+{
+    {COMPOUND_STRING("(OMANYTE) HELIX FOSSIL")},
+    {COMPOUND_STRING("(KABUTO) DOME FOSSIL")},
+    {COMPOUND_STRING("(AERODACTYL) OLD AMBER")},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_FossilHoenn[] =
+{
+    {COMPOUND_STRING("(ANORITH) CLAW FOSSIL")},
+    {COMPOUND_STRING("(LILEEP) ROOT FOSSIL")},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_FossilSinnoh[] =
+{
+    {COMPOUND_STRING("(CRANIDOS) SKULL FOSSIL")},
+    {COMPOUND_STRING("(SHIELDON) ARMOR FOSSIL")},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_FossilUnova[] =
+{
+    {COMPOUND_STRING("(TIRTOUGA) COVER FOSSIL")},
+    {COMPOUND_STRING("(ARCHEN) PLUME FOSSIL")},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_FossilKalos[] =
+{
+    {COMPOUND_STRING("(TYRUNT) JAW FOSSIL")},
+    {COMPOUND_STRING("(AMAURA) SAIL FOSSIL")},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_FossilGalar[] =
+{
+    {COMPOUND_STRING("(ARCTOZOLT) F. BIRD")},
+    {COMPOUND_STRING("(ARCTOVISH) F. FISH")},
+    {COMPOUND_STRING("(DRACOVISH) F. DRAKE")},
+    {COMPOUND_STRING("(DRACOZOLT) F. DINO")},
     {gText_Exit},
 };
 
@@ -1229,6 +1277,12 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_UNUSED_SSTIDAL_3]           = MULTICHOICE(MultichoiceList_UnusedSSTidal3),
     [MULTI_UNUSED_SSTIDAL_4]           = MULTICHOICE(MultichoiceList_UnusedSSTidal4),
     [MULTI_FOSSIL]                     = MULTICHOICE(MultichoiceList_Fossil),
+    [MULTI_FOSSIL_KANTO]               = MULTICHOICE(MultichoiceList_FossilKanto),
+    [MULTI_FOSSIL_HOENN]               = MULTICHOICE(MultichoiceList_FossilHoenn),
+    [MULTI_FOSSIL_SINNOH]              = MULTICHOICE(MultichoiceList_FossilSinnoh),
+    [MULTI_FOSSIL_UNOVA]               = MULTICHOICE(MultichoiceList_FossilUnova),
+    [MULTI_FOSSIL_KALOS]               = MULTICHOICE(MultichoiceList_FossilKalos),
+    [MULTI_FOSSIL_GALAR]               = MULTICHOICE(MultichoiceList_FossilGalar),
     [MULTI_YESNO]                      = MULTICHOICE(MultichoiceList_YesNo),
     [MULTI_FRONTIER_RULES]             = MULTICHOICE(MultichoiceList_FrontierRules),
     [MULTI_BATTLE_ARENA_RULES]         = MULTICHOICE(MultichoiceList_BattleArenaRules),
