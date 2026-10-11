@@ -74,6 +74,11 @@ extern const u8 gText_DecorationThrownAway[];
 extern const u8 gText_PokeBalls[];
 extern const u8 gText_Berries[];
 extern const u8 gText_Berry[];
+extern const u8 gText_Battle_Items[];
+extern const u8 gText_MegaStones[];
+extern const u8 gText_Medicine[];
+extern const u8 gText_ZCrystalls[];
+extern const u8 gText_EvoItems[];
 
 extern const u8 gText_Desk[];
 extern const u8 gText_Chair[];

@@ -93,10 +93,10 @@ enum Language
 #define DAYCARE_MON_COUNT 2
 #define POKEBLOCKS_COUNT 40
 #define OBJECT_EVENTS_COUNT 16
-#define MAIL_COUNT (10 + PARTY_SIZE)
-#define SECRET_BASES_COUNT 20
+#define MAIL_COUNT (5 + PARTY_SIZE)
+#define SECRET_BASES_COUNT 10
 #define POKE_NEWS_COUNT 16
-#define PC_ITEMS_COUNT 50
+#define PC_ITEMS_COUNT 20
 #define OBJECT_EVENT_TEMPLATES_COUNT 64
 #define DECOR_MAX_SECRET_BASE 16
 #define DECOR_MAX_PLAYERS_HOUSE 12
@@ -110,18 +110,23 @@ enum Language
 #define ROAMER_COUNT 1 // Number of maximum concurrent active roamers
 
 // Bag constants
-#define BAG_ITEMS_COUNT 30
-#define BAG_KEYITEMS_COUNT 30
-#define BAG_POKEBALLS_COUNT 16
+#define BAG_ITEMS_COUNT 100
+#define BAG_MEDICINE_COUNT 100
+#define BAG_BATTLEITEMS_COUNT 100
+#define BAG_MEGASTONES_COUNT 100
+#define BAG_ZCRYSTALS_COUNT 50
+#define BAG_EVOITEMS_COUNT 100
+#define BAG_KEYITEMS_COUNT 150
+#define BAG_POKEBALLS_COUNT 50
 #define BAG_TMHM_COUNT 64
-#define BAG_BERRIES_COUNT 46
+#define BAG_BERRIES_COUNT 100
 
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
 // Excludes link modes. See RANKING_HALL_* in include/constants/battle_frontier.h
 #define HALL_FACILITIES_COUNT 9
 // Received via record mixing, 1 for each player other than yourself
-#define HALL_RECORDS_COUNT 3
+#define HALL_RECORDS_COUNT 1
 
 // Battle Frontier level modes.
 enum FrontierLevelMode

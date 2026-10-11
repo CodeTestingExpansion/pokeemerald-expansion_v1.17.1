@@ -99,6 +99,11 @@ struct ItemSlot NONNULL BagPocket_GetSlotData(struct BagPocket *pocket, u32 pock
     case POCKET_KEY_ITEMS:
     case POCKET_POKE_BALLS:
     case POCKET_TM_HM:
+    case POCKET_BATTLEITEMS:
+    case POCKET_EVOITEMS:
+    case POCKET_MEDICINE:
+    case POCKET_MEGASTONES:
+    case POCKET_ZCRYSTALS:
     case POCKET_BERRIES:
         return BagPocket_GetSlotDataGeneric(pocket, pocketPos);
     case POCKET_DUMMY:
@@ -122,6 +127,11 @@ void NONNULL BagPocket_SetSlotData(struct BagPocket *pocket, u32 pocketPos, stru
     case POCKET_KEY_ITEMS:
     case POCKET_POKE_BALLS:
     case POCKET_TM_HM:
+    case POCKET_BATTLEITEMS:
+    case POCKET_EVOITEMS:
+    case POCKET_MEDICINE:
+    case POCKET_MEGASTONES:
+    case POCKET_ZCRYSTALS:
     case POCKET_BERRIES:
         BagPocket_SetSlotDataGeneric(pocket, pocketPos, newSlot);
         break;
@@ -163,6 +173,26 @@ void SetBagItemsPointers(void)
     gBagPockets[POCKET_BERRIES].itemSlots = gSaveBlock1Ptr->bag.berries;
     gBagPockets[POCKET_BERRIES].capacity = BAG_BERRIES_COUNT;
     gBagPockets[POCKET_BERRIES].id = POCKET_BERRIES;
+
+    gBagPockets[POCKET_MEDICINE].itemSlots = gSaveBlock1Ptr->bag.Medicine;
+    gBagPockets[POCKET_MEDICINE].capacity = BAG_MEDICINE_COUNT;
+    gBagPockets[POCKET_MEDICINE].id = POCKET_MEDICINE;
+
+    gBagPockets[POCKET_BATTLEITEMS].itemSlots = gSaveBlock1Ptr->bag.BattleItems;
+    gBagPockets[POCKET_BATTLEITEMS].capacity = BAG_BATTLEITEMS_COUNT;
+    gBagPockets[POCKET_BATTLEITEMS].id = POCKET_BATTLEITEMS;
+
+    gBagPockets[POCKET_EVOITEMS].itemSlots = gSaveBlock1Ptr->bag.EvoItems;
+    gBagPockets[POCKET_EVOITEMS].capacity = BAG_EVOITEMS_COUNT;
+    gBagPockets[POCKET_EVOITEMS].id = POCKET_EVOITEMS;
+
+    gBagPockets[POCKET_MEGASTONES].itemSlots = gSaveBlock1Ptr->bag.MegaStones;
+    gBagPockets[POCKET_MEGASTONES].capacity = BAG_MEGASTONES_COUNT;
+    gBagPockets[POCKET_MEGASTONES].id = POCKET_MEGASTONES;
+
+    gBagPockets[POCKET_ZCRYSTALS].itemSlots = gSaveBlock1Ptr->bag.ZCrystals;
+    gBagPockets[POCKET_ZCRYSTALS].capacity = BAG_ZCRYSTALS_COUNT;
+    gBagPockets[POCKET_ZCRYSTALS].id = POCKET_ZCRYSTALS;
 }
 
 u8 *CopyItemName(enum Item itemId, u8 *dst)
