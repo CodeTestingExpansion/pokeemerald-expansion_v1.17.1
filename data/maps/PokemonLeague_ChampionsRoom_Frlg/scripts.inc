@@ -71,7 +71,8 @@ PokemonLeague_ChampionsRoom_EventScript_EnterRoom::
 	applymovement LOCALID_CHAMPIONS_ROOM_PROF_OAK, PokemonLeague_ChampionsRoom_Movement_OakEnter
 	waitmovement 0
 	delay 25
-	specialvar VAR_RESULT, GetStarterPokemon
+	copyvar VAR_0x8004, VAR_STARTER_MON
+	specialvar VAR_RESULT, GetStarterPokemonForScript
 	bufferspeciesname STR_VAR_1, VAR_RESULT
 	msgbox PokemonLeague_ChampionsRoom_Text_OakCongratulations
 	applymovement LOCALID_CHAMPIONS_ROOM_PROF_OAK, Common_Movement_WalkInPlaceFasterRight
@@ -324,4 +325,3 @@ PokemonLeague_ChampionsRoom_Text_OakPlayerComeWithMe::
 	.string "POKéMON is marvelous.\p"
 	.string "{PLAYER}!\n"
 	.string "Come with me!$"
-

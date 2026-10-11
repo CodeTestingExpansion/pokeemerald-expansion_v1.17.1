@@ -420,7 +420,18 @@ u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
         chosenStarterId = 0;
+#if IS_FRLG
+    if (chosenStarterId == 1)
+        chosenStarterId = 2;
+    else if (chosenStarterId == 2)
+        chosenStarterId = 1;
+#endif
     return sStarterMon[VarGet(VAR_REGION_CHOICE)][chosenStarterId];
+}
+
+u16 GetStarterPokemonForScript(void)
+{
+    return GetStarterPokemon(VarGet(VAR_0x8004));
 }
 
 static void VblankCB_StarterChoose(void)

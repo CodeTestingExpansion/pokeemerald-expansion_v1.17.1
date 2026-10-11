@@ -957,8 +957,10 @@ PewterCity_Text_SwitchedShoesWithRunningShoes::
 	.string "RUNNING SHOES.$"
 
 PewterCity_Text_ExplainRunningShoes::
-	.string "Press the B Button to run.\n"
-	.string "But only where there's room to run!$"
+	.string "“Press the L Button to toogle\n"
+	.string "between running and walking.“\p"	
+	.string "“Press the B Button to momentarily\n"
+	.string "switch them (Walking <-> Running).“$"
 
 PewterCity_Text_MustBeGoingBackToLab::
 	.string "Well, I must be going back to\n"
