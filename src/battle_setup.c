@@ -2286,13 +2286,25 @@ static void CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
         switch (playerStarter)
         {
         case 0:
+#if IS_FRLG
             rivalStarter = 2;
+#else
+            rivalStarter = 1;
+#endif
             break;
         case 1:
+#if IS_FRLG
             rivalStarter = 0;
+#else
+            rivalStarter = 2;
+#endif
             break;
         case 2:
+#if IS_FRLG
             rivalStarter = 1;
+#else
+            rivalStarter = 0;
+#endif
             break;
         default:
             CreateNPCTrainerPartyFromTrainer(party, trainer);
