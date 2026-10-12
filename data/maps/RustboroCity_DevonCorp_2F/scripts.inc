@@ -59,7 +59,18 @@ RustboroCity_DevonCorp_2F_EventScript_FossilScientist::
 	faceplayer
 	goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 2, RustboroCity_DevonCorp_2F_EventScript_FossilMonReady
 	goto_if_eq VAR_FOSSIL_RESURRECTION_STATE, 1, RustboroCity_DevonCorp_2F_EventScript_StillRegenerating
+	goto_if_set FLAG_RECEIVED_REVIVED_FOSSIL_MON, RustboroCity_DevonCorp_2F_EventScript_AskToRegenerateAnotherFossil
+	setvar VAR_TEMP_2, 0
 	msgbox RustboroCity_DevonCorp_2F_Text_DevelopDeviceToResurrectFossils, MSGBOX_DEFAULT
+	goto RustboroCity_DevonCorp_2F_EventScript_CheckAvailableFossils
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_AskToRegenerateAnotherFossil::
+	msgbox RustboroCity_DevonCorp_2F_Text_AskToRegenerateAnotherFossil, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, RustboroCity_DevonCorp_2F_EventScript_DeclineGiveFossil
+	setvar VAR_TEMP_2, 1
+
+RustboroCity_DevonCorp_2F_EventScript_CheckAvailableFossils::
 	checkitem ITEM_ROOT_FOSSIL
 	goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeRootFossil
 	checkitem ITEM_CLAW_FOSSIL
@@ -90,6 +101,12 @@ RustboroCity_DevonCorp_2F_EventScript_FossilScientist::
 	goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeFossilizedDrake
 	checkitem ITEM_FOSSILIZED_DINO
 	goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_NoticeFossilizedDino
+	goto_if_eq VAR_TEMP_2, 1, RustboroCity_DevonCorp_2F_EventScript_NoFossilsToRegenerate
+	release
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_NoFossilsToRegenerate::
+	msgbox RustboroCity_DevonCorp_2F_Text_NoFossilsToRegenerate, MSGBOX_DEFAULT
 	release
 	end
 
@@ -154,6 +171,7 @@ RustboroCity_DevonCorp_2F_EventScript_NoticeFossilizedDino::
 	goto RustboroCity_DevonCorp_2F_EventScript_NoticeFossil
 
 RustboroCity_DevonCorp_2F_EventScript_NoticeFossil::
+	goto_if_eq VAR_TEMP_2, 1, RustboroCity_DevonCorp_2F_EventScript_ChooseAnotherFossil
 	closemessage
 	playse SE_PIN
 	applymovement LOCALID_FOSSIL_SCIENTIST, Common_Movement_ExclamationMark
@@ -162,6 +180,11 @@ RustboroCity_DevonCorp_2F_EventScript_NoticeFossil::
 	waitmovement 0
 	msgbox RustboroCity_DevonCorp_2F_Text_WantToBringFossilBackToLife, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, RustboroCity_DevonCorp_2F_EventScript_DeclineGiveFossil
+	msgbox RustboroCity_DevonCorp_2F_Text_TwoFossilsPickOne, MSGBOX_DEFAULT
+	goto RustboroCity_DevonCorp_2F_EventScript_ChooseFossil
+	end
+
+RustboroCity_DevonCorp_2F_EventScript_ChooseAnotherFossil::
 	msgbox RustboroCity_DevonCorp_2F_Text_TwoFossilsPickOne, MSGBOX_DEFAULT
 	goto RustboroCity_DevonCorp_2F_EventScript_ChooseFossil
 	end
@@ -262,7 +285,7 @@ RustboroCity_DevonCorp_2F_EventScript_VerifyFossilizedDino::
 RustboroCity_DevonCorp_2F_EventScript_CheckSelectedFossil::
 	goto_if_eq VAR_RESULT, TRUE, RustboroCity_DevonCorp_2F_EventScript_GiveFossil
 	msgbox RustboroCity_DevonCorp_2F_Text_DontHaveSelectedFossil, MSGBOX_DEFAULT
-	release
+	goto RustboroCity_DevonCorp_2F_EventScript_ChooseFossil
 	end
 
 RustboroCity_DevonCorp_2F_EventScript_GiveFossil::
@@ -740,6 +763,14 @@ RustboroCity_DevonCorp_2F_Text_DevelopDeviceToResurrectFossils:
 	.string "I've been trying to develop a device\n"
 	.string "that resurrects POKéMON from fossils…\p"
 	.string "And, it's working!$"
+
+RustboroCity_DevonCorp_2F_Text_AskToRegenerateAnotherFossil:
+	.string "Hi! You want to regenerate another\n"
+	.string "fossil?$"
+
+RustboroCity_DevonCorp_2F_Text_NoFossilsToRegenerate:
+	.string "You don't have any fossils for me to\n"
+	.string "regenerate.$"
 
 RustboroCity_DevonCorp_2F_Text_WantToBringFossilBackToLife:
 	.string "Wait! That thing you have there…\n"
