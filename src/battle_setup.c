@@ -2259,14 +2259,71 @@ void CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Traine
 
 static void CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
 {
-    if (!GetTrainerStructFromId(trainerNum)->overrideTrainer)
+    const struct Trainer *trainer = GetTrainerStructFromId(trainerNum);
+
+    if (
+#if IS_FRLG
+        (trainer->trainerClass == TRAINER_CLASS_RIVAL_EARLY_FRLG
+      || trainer->trainerClass == TRAINER_CLASS_RIVAL_LATE_FRLG
+      || trainer->trainerClass == TRAINER_CLASS_CHAMPION_FRLG)
+#else
+        (trainer->trainerClass == TRAINER_CLASS_RIVAL
+      && (trainer->trainerPic == TRAINER_PIC_BRENDAN || trainer->trainerPic == TRAINER_PIC_MAY))
+#endif
+     && !trainer->overrideTrainer
+     && trainer->partySize > 0
+     && trainer->partySize <= PARTY_SIZE
+     && trainer->party != NULL)
     {
-        CreateNPCTrainerPartyFromTrainer(party, GetTrainerStructFromId(trainerNum));
+        struct Trainer regionalTrainer = *trainer;
+        struct TrainerMon regionalParty[PARTY_SIZE];
+        struct Pokemon mon;
+        enum Species species;
+        enum Species evolvedSpecies;
+        u16 playerStarter = VarGet(VAR_STARTER_MON);
+        u16 rivalStarter;
+
+        switch (playerStarter)
+        {
+        case 0:
+            rivalStarter = 2;
+            break;
+        case 1:
+            rivalStarter = 0;
+            break;
+        case 2:
+            rivalStarter = 1;
+            break;
+        default:
+            CreateNPCTrainerPartyFromTrainer(party, trainer);
+            return;
+        }
+
+        memcpy(regionalParty, trainer->party, trainer->partySize * sizeof(regionalParty[0]));
+        regionalTrainer.party = regionalParty;
+        species = GetStarterPokemon(rivalStarter);
+        CreateMon(&mon, species, regionalParty[trainer->partySize - 1].lvl, 0, OTID_STRUCT_RANDOM_NO_SHINY);
+
+        while ((evolvedSpecies = GetEvolutionTargetSpecies(&mon, EVO_MODE_NORMAL, ITEM_NONE, NULL, NULL, CHECK_EVO)) != SPECIES_NONE)
+        {
+            species = evolvedSpecies;
+            CreateMon(&mon, species, regionalParty[trainer->partySize - 1].lvl, 0, OTID_STRUCT_RANDOM_NO_SHINY);
+        }
+
+        regionalParty[trainer->partySize - 1].species = species;
+        memset(regionalParty[trainer->partySize - 1].moves, 0, sizeof(regionalParty[trainer->partySize - 1].moves));
+        CreateNPCTrainerPartyFromTrainer(party, &regionalTrainer);
+        return;
+    }
+
+    if (!trainer->overrideTrainer)
+    {
+        CreateNPCTrainerPartyFromTrainer(party, trainer);
         return;
     }
 
     struct Trainer tempTrainer;
-    memcpy(&tempTrainer, GetTrainerStructFromId(trainerNum), sizeof(struct Trainer));
+    memcpy(&tempTrainer, trainer, sizeof(struct Trainer));
     const struct Trainer *origTrainer = GetTrainerStructFromId(tempTrainer.overrideTrainer);
 
     tempTrainer.party = origTrainer->party;

@@ -1188,20 +1188,7 @@ PalletTown_ProfessorOaksLab_EventScript_RivalTakesStarter::
 	msgbox PalletTown_ProfessorOaksLab_Text_RivalIllTakeThisOneThen
 	removeobject RIVAL_STARTER_ID
 	textcolor NPC_TEXT_COLOR_NEUTRAL
-	goto_if_eq RIVAL_STARTER_ID, LOCALID_BULBASAUR_BALL, PalletTown_ProfessorOaksLab_EventScript_RivalChoseGrassStarter
-	goto_if_eq RIVAL_STARTER_ID, LOCALID_CHARMANDER_BALL, PalletTown_ProfessorOaksLab_EventScript_RivalChoseFireStarter
-	goto PalletTown_ProfessorOaksLab_EventScript_RivalChoseWaterStarter
-
-PalletTown_ProfessorOaksLab_EventScript_RivalChoseGrassStarter::
-	bufferspeciesname STR_VAR_1, SPECIES_BULBASAUR
-	goto PalletTown_ProfessorOaksLab_EventScript_RivalReceivedStarter
-
-PalletTown_ProfessorOaksLab_EventScript_RivalChoseFireStarter::
-	bufferspeciesname STR_VAR_1, SPECIES_CHARMANDER
-	goto PalletTown_ProfessorOaksLab_EventScript_RivalReceivedStarter
-
-PalletTown_ProfessorOaksLab_EventScript_RivalChoseWaterStarter::
-	bufferspeciesname STR_VAR_1, SPECIES_SQUIRTLE
+	bufferspeciesname STR_VAR_1, RIVAL_STARTER_SPECIES
 
 PalletTown_ProfessorOaksLab_EventScript_RivalReceivedStarter::
 	message PalletTown_ProfessorOaksLab_Text_RivalReceivedMonFromOak
@@ -1428,8 +1415,8 @@ PalletTown_ProfessorOaksLab_Text_OakThreeMonsChooseOne::
 	.string "Go on, choose!$"
 
 PalletTown_ProfessorOaksLab_Text_OakAskStarterRegion::
-	.string "OAK: I have three POKéMON.\n"
-	.string "What region are they from?$"
+	.string "OAK: I have three POKéMON there.\n"
+	.string "Can you guess where they came from?$"
 
 PalletTown_ProfessorOaksLab_Text_OakConfirmStarterRegion::
 	.string "OAK: Yes, that's right!\n"
@@ -1507,11 +1494,11 @@ PalletTown_ProfessorOaksLab_Text_OakPokedexOnDesk::
 PalletTown_ProfessorOaksLab_Text_OakTakeTheseWithYou::
 	.string "OAK: {PLAYER} and {RIVAL}.\n"
 	.string "This will also allows you to use the\l"
-	.string "DexNav. It's a great tool to help you\l"
+	.string "DexNav. It's a great tool to help you\n"
 	.string "catch many Pokémon\p"
-	.string "When using it, press A to slow walk.\l"
+	.string "When using it, press A to slow walk.\n"
 	.string "towards the pokémon, or else\l"
-	.string "they will flee from you.\p"
+	.string "they will flee from you.\n"
 	.string "Take these with you.$"
 
 PalletTown_ProfessorOaksLab_Text_ReceivedPokedexFromOak::
