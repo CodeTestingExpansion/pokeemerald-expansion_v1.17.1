@@ -344,7 +344,7 @@ static const u8 sContextMenuItems_BerriesPocket[] = {
 };
 
 static const u8 sContextMenuItems_BattleItemsPocket[] = {
-    ACTION_GIVE,
+    ACTION_USE,         ACTION_GIVE,
     ACTION_TOSS,        ACTION_CANCEL
 };
 
@@ -359,13 +359,13 @@ static const u8 sContextMenuItems_MedicinePocket[] = {
 };
 
 static const u8 sContextMenuItems_MegaStonesPocket[] = {
-    ACTION_GIVE,
-    ACTION_TOSS,        ACTION_CANCEL
+    ACTION_GIVE,        ACTION_TOSS,
+    ACTION_DUMMY,       ACTION_CANCEL
 };
 
 static const u8 sContextMenuItems_ZCrystalsPocket[] = {
-    ACTION_GIVE,
-    ACTION_TOSS,        ACTION_CANCEL
+    ACTION_GIVE,        ACTION_TOSS,
+    ACTION_DUMMY,       ACTION_CANCEL
 };
 
 static const u8 sContextMenuItems_BattleUse[] = {

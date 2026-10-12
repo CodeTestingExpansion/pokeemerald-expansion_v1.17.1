@@ -1542,7 +1542,7 @@ const struct ItemInfo gItemsInfo[] =
             "A capsule that\n"
             "allows a Pokémon to\n"
             "switch Abilities."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_FIELD_USE,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_AbilityCapsule,
@@ -1560,7 +1560,7 @@ const struct ItemInfo gItemsInfo[] =
             "Changes a regular\n"
             "Ability to a\n"
             "rarer Ability."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_FIELD_USE,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_AbilityPatch,
@@ -1578,7 +1578,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Attack and\n"
             "lowers Defense."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1596,7 +1596,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Attack and\n"
             "lowers Sp. Atk."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1614,7 +1614,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Attack and\n"
             "lowers Sp. Def."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1632,7 +1632,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Attack and\n"
             "lowers Speed."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1650,7 +1650,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Defense and\n"
             "lowers Attack."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1668,7 +1668,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Defense and\n"
             "lowers Sp. Atk."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1686,7 +1686,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Defense and\n"
             "lowers Sp. Def."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1704,7 +1704,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Defense and\n"
             "lowers Speed."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1722,7 +1722,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Atk and\n"
             "lowers Attack."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1740,7 +1740,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Atk and\n"
             "lowers Defense."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1758,7 +1758,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Atk and\n"
             "lowers Sp. Def."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1776,7 +1776,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Atk and\n"
             "lowers Speed."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1794,7 +1794,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Def and\n"
             "lowers Attack."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1812,7 +1812,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Def and\n"
             "lowers Defense."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1830,7 +1830,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Def and\n"
             "lowers Sp. Atk."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1848,7 +1848,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Sp. Def and\n"
             "lowers Speed."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1866,7 +1866,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Speed and\n"
             "lowers Attack."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1884,7 +1884,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Speed and\n"
             "lowers Defense."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1902,7 +1902,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Speed and\n"
             "lowers Sp. Atk."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1920,7 +1920,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "raises Speed and\n"
             "lowers Sp. Def."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1938,7 +1938,7 @@ const struct ItemInfo gItemsInfo[] =
             "When smelled, it\n"
             "makes a Pokémon's\n"
             "stats grow equally."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_NATURE_MINT,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Mint,
@@ -1959,7 +1959,7 @@ const struct ItemInfo gItemsInfo[] =
             "Raises the level\n"
             "of a Pokémon by\n"
             "one."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
@@ -1979,7 +1979,7 @@ const struct ItemInfo gItemsInfo[] =
             "Grants a very small\n"
             "amount of Exp. to\n"
             "a single Pokémon."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
@@ -1999,7 +1999,7 @@ const struct ItemInfo gItemsInfo[] =
             "Grants a small\n"
             "amount of Exp. to\n"
             "a single Pokémon."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
@@ -2019,7 +2019,7 @@ const struct ItemInfo gItemsInfo[] =
             "Grants a moderate\n"
             "amount of Exp. to\n"
             "a single Pokémon."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
@@ -2039,7 +2039,7 @@ const struct ItemInfo gItemsInfo[] =
             "Grants a large\n"
             "amount of Exp. to\n"
             "a single Pokémon."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
@@ -2059,7 +2059,7 @@ const struct ItemInfo gItemsInfo[] =
             "Grants a very large\n"
             "amount of Exp. to\n"
             "a single Pokémon."),
-        .pocket = POCKET_BATTLEITEMS,
+        .pocket = POCKET_MEDICINE,
         .sortType = ITEM_TYPE_LEVEL_UP_ITEM,
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,

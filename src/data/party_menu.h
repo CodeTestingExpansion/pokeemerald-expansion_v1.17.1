@@ -623,6 +623,17 @@ static const struct WindowTemplate sMoveSelectWindowTemplate =
     .baseBlock = 0x2E9,
 };
 
+static const struct WindowTemplate sGiveHowManyItemsWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 24,
+    .tilemapTop = 11,
+    .width = 4,
+    .height = 2,
+    .paletteNum = 14,
+    .baseBlock = 0x2E9,
+};
+
 static const struct WindowTemplate sCatalogSelectWindowTemplate =
 {
     .bg = 2,
