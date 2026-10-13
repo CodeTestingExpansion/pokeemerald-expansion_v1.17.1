@@ -2112,6 +2112,7 @@ extern const u8 gText_FollowerReturnedToBall[];
 extern const u8 gText_DoWhatWithFollower[];
 extern const u8 gText_DexNavDescription[];
 extern const u8 gText_DexNavNoEncounters[];
+extern const u8 gText_StartMenuDexNavNoEncounters[];
 extern const u8 gText_AM[];
 extern const u8 gText_PM[];
 

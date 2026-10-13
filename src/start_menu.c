@@ -11,6 +11,7 @@
 #include "event_scripts.h"
 #include "fieldmap.h"
 #include "field_effect.h"
+#include "field_message_box.h"
 #include "field_player_avatar.h"
 #include "field_specials.h"
 #include "field_weather.h"
@@ -121,6 +122,8 @@ static bool8 BattlePyramidRetireStartCallback(void);
 static bool8 BattlePyramidRetireReturnCallback(void);
 static bool8 BattlePyramidRetireCallback(void);
 static bool8 HandleStartMenuInput(void);
+static void HideStartMenuWindow(void);
+static void Task_DexNavNoEncountersMessage(u8 taskId);
 
 // Save dialog callbacks
 static u8 SaveConfirmSaveCallback(void);
@@ -746,7 +749,17 @@ static bool8 HandleStartMenuInput(void)
         }
         if (sCurrentStartMenuActions[sStartMenuCursorPos] == MENU_ACTION_DEXNAV
           && MapHasNoEncounterData())
-            return FALSE;
+        {
+            RemoveExtraStartMenuWindows();
+            HideStartMenuWindow();
+            FreezeObjectEvents();
+            PlayerFreeze();
+            StopPlayerAvatar();
+            LockPlayerFieldControls();
+            PlaySE(SE_FAILURE);
+            CreateTask(Task_DexNavNoEncountersMessage, 0x50);
+            return TRUE;
+        }
 
         gMenuCallback = sStartMenuItems[sCurrentStartMenuActions[sStartMenuCursorPos]].func.u8_void;
 
@@ -772,6 +785,32 @@ static bool8 HandleStartMenuInput(void)
     RemoveExtraStartMenuWindows();
     ShowTimeWindow();
     return FALSE;
+}
+
+static void Task_DexNavNoEncountersMessage(u8 taskId)
+{
+    if (gTasks[taskId].data[0] == 0)
+    {
+        gTasks[taskId].data[0]++;
+        return;
+    }
+    if (gTasks[taskId].data[0] == 1)
+    {
+        ShowFieldMessage(gText_StartMenuDexNavNoEncounters);
+        gTasks[taskId].data[0]++;
+        return;
+    }
+
+    if (RunTextPrintersAndIsPrinter0Active())
+        return;
+
+    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        HideFieldMessageBox();
+        DestroyTask(taskId);
+        ShowStartMenu();
+    }
 }
 
 bool8 StartMenuPokedexCallback(void)
