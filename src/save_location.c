@@ -1,5 +1,7 @@
 #include "global.h"
+#include "event_data.h"
 #include "save_location.h"
+#include "config/pokedex_plus_hgss.h"
 
 #define LIST_END 0xFFFF
 
@@ -124,6 +126,9 @@ void TrySetMapSaveWarpStatus(void)
 // These flags are read by Pokémon Colosseum/XD for linking. XD Additionally requires FLAG_SYS_GAME_CLEAR
 void SetUnlockedPokedexFlags(void)
 {
+    if (POKEDEX_PLUS_HGSS)
+        EnableNationalPokedex();
+
     if (IS_FRLG)
     {
         gSaveBlock2Ptr->gcnLinkFlags |= (1 << 0);

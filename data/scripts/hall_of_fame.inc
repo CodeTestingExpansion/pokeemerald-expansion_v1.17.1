@@ -47,5 +47,10 @@ EverGrandeCity_HallOfFame_EventScript_ReadyReceiveSSTicketEvent::
 	return
 
 EverGrandeCity_HallOfFame_EventScript_ReadyDexUpgradeEvent::
+	specialvar VAR_RESULT, IsNationalPokedexEnabled
+	call_if_eq VAR_RESULT, FALSE, EverGrandeCity_HallOfFame_EventScript_SetDexUpgradeReady
+	return
+
+EverGrandeCity_HallOfFame_EventScript_SetDexUpgradeReady::
 	setvar VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1
 	return
