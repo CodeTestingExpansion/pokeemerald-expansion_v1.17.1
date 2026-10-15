@@ -243,6 +243,7 @@ LittlerootTown_EventScript_SetRivalBirchPosForDexUpgradeFemale::
 
 LittlerootTown_EventScript_FatMan::
 	msgbox LittlerootTown_Text_CanUsePCToStoreItems, MSGBOX_NPC
+	call EventScript_WonderTrade
 	end
 
 LittlerootTown_EventScript_Boy::
@@ -1015,4 +1016,3 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I gave you?\p"
 	.string "I have something to show you.\n"
 	.string "Let's go to my LAB.$"
-

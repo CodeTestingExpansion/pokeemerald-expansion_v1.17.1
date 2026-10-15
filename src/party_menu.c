@@ -83,6 +83,7 @@
 
 enum {
     MENU_SUMMARY,
+    MENU_WONDER_TRADE,
     MENU_SWITCH,
     MENU_FOLLOWER,
     MENU_FOLLOWER_SET,
@@ -147,6 +148,7 @@ enum {
     ACTIONS_FOLLOWER_SET_RETURN,
     ACTIONS_FOLLOWER_UNSET,
     ACTIONS_FOLLOWER_UNSET_RETURN,
+    ACTIONS_WONDER_TRADE,
 };
 
 enum {
@@ -489,6 +491,7 @@ static void Task_PartyMenuWaitForFade(u8 taskId);
 static void Task_ChooseContestMon(u8 taskId);
 static void CB2_ChooseContestMon(void);
 static void Task_ChoosePartyMon(u8 taskId);
+static void Task_ChooseMonForWonderTrade(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
 static void Task_BattlePyramidChooseMonHeldItems(u8);
@@ -496,6 +499,7 @@ static void ShiftMoveSlot(struct BoxPokemon *, u8, u8);
 static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, bool8);
 static void BlitBitmapToPartyWindow_RightColumn(u8, u8, u8, u8, u8, bool8);
 static void CursorCb_Summary(u8);
+static void CursorCb_WonderTradeInitiate(u8);
 static void CursorCb_Switch(u8);
 static void CursorCb_Cancel1(u8);
 static void CursorCb_Item(u8);
@@ -2907,7 +2911,10 @@ static u8 DisplaySelectionWindow(u8 windowType)
     switch (windowType)
     {
     case SELECTWINDOW_ACTIONS:
-        SetWindowTemplateFields(&window, 2, 19, 19 - (sPartyMenuInternal->numActions * 2), 10, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
+        if (gPartyMenu.menuType == PARTY_MENU_TYPE_WONDER_TRADE)
+            SetWindowTemplateFields(&window, 2, 17, 10, 13, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
+        else
+            SetWindowTemplateFields(&window, 2, 19, 19 - (sPartyMenuInternal->numActions * 2), 10, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
         break;
     case SELECTWINDOW_ITEM:
         window = sItemGiveTakeWindowTemplate;
@@ -3152,6 +3159,9 @@ static u8 GetPartyMenuActionsType(struct Pokemon *mon)
     case PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS:
         actionType = ACTIONS_TAKEITEM_TOSS;
         break;
+    case PARTY_MENU_TYPE_WONDER_TRADE:
+        actionType = ACTIONS_WONDER_TRADE;
+        break;
     // The following have no selection actions (i.e. they exit immediately upon selection)
     // PARTY_MENU_TYPE_CONTEST
     // PARTY_MENU_TYPE_CHOOSE_MON
@@ -3253,6 +3263,13 @@ static void CursorCb_Summary(u8 taskId)
 {
     PlaySE(SE_SELECT);
     sPartyMenuInternal->exitCallback = CB2_ShowPokemonSummaryScreen;
+    Task_ClosePartyMenu(taskId);
+}
+
+static void CursorCb_WonderTradeInitiate(u8 taskId)
+{
+    PlaySE(SE_SELECT);
+    gSpecialVar_0x8005 = TRUE;
     Task_ClosePartyMenu(taskId);
 }
 
@@ -8344,6 +8361,24 @@ static void Task_ChoosePartyMon(u8 taskId)
     {
         CleanupOverworldWindowsAndTilemaps();
         InitPartyMenu(PARTY_MENU_TYPE_CHOOSE_MON, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_AND_CLOSE, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
+        DestroyTask(taskId);
+    }
+}
+
+void ChooseMonForWonderTrade(void)
+{
+    gSpecialVar_0x8005 = FALSE;
+    LockPlayerFieldControls();
+    FadeScreen(FADE_TO_BLACK, 0);
+    CreateTask(Task_ChooseMonForWonderTrade, 10);
+}
+
+static void Task_ChooseMonForWonderTrade(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        InitPartyMenu(PARTY_MENU_TYPE_WONDER_TRADE, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
         DestroyTask(taskId);
     }
 }

@@ -178,6 +178,10 @@ gSpecials::
 	def_special StartWallyTutorialBattle, waitstate=1
 	def_special ChangePokemonNickname, waitstate=1
 	def_special ChoosePartyMon, waitstate=1
+	def_special ChooseMonForWonderTrade, waitstate=1
+	def_special WonderTradeSelectedMon
+	def_special WonderTradeBufferSuccessText
+	def_special DoWonderTradeScene, waitstate=1
 	def_special GetFirstFreePokeblockSlot
 	def_special DoBerryBlending, waitstate=1
 	def_special PlayRoulette, waitstate=1

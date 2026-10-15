@@ -175,6 +175,7 @@ static EWRAM_DATA u8 *sMenuTextTileBuffers[NUM_MENU_TEXT_SPRITES] = {NULL};
 
 EWRAM_DATA struct Mail gTradeMail[PARTY_SIZE] = {0};
 EWRAM_DATA u8 gSelectedTradeMonPositions[2] = {0};
+static EWRAM_DATA bool8 sIsWonderTradeScene = FALSE;
 static EWRAM_DATA struct {
     u8 bg2hofs;
     u8 bg3hofs;
@@ -3331,7 +3332,15 @@ static void BufferTradeSceneStrings(void)
     u8 name[POKEMON_NAME_BUFFER_SIZE];
     const struct InGameTrade *ingameTrade;
 
-    if (sTradeAnim->isLinkTrade)
+    if (sIsWonderTradeScene)
+    {
+        GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_OT_NAME, gStringVar1);
+        GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_NICKNAME, name);
+        StringCopy_Nickname(gStringVar3, name);
+        GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004], MON_DATA_NICKNAME, name);
+        StringCopy_Nickname(gStringVar2, name);
+    }
+    else if (sTradeAnim->isLinkTrade)
     {
         mpId = GetMultiplayerId();
         StringCopy(gStringVar1, gLinkPlayers[mpId ^ 1].name);
@@ -4555,10 +4564,21 @@ u16 GetInGameTradeSpeciesInfo(void)
 static void BufferInGameTradeMonName(void)
 {
     u8 nickname[max(32, POKEMON_NAME_BUFFER_SIZE)];
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8005];
-    GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8005], MON_DATA_NICKNAME, nickname);
-    StringCopy_Nickname(gStringVar1, nickname);
-    StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
+
+    if (sIsWonderTradeScene)
+    {
+        GetMonData(&gParties[B_TRAINER_PLAYER][gSelectedTradeMonPositions[TRADE_PLAYER]], MON_DATA_NICKNAME, nickname);
+        StringCopy_Nickname(gStringVar1, nickname);
+        StringCopy(gStringVar2, GetSpeciesName(GetMonData(&gParties[B_TRAINER_PLAYER][gSelectedTradeMonPositions[TRADE_PLAYER]], MON_DATA_SPECIES)));
+        sIsWonderTradeScene = FALSE;
+    }
+    else
+    {
+        const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8005];
+        GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8005], MON_DATA_NICKNAME, nickname);
+        StringCopy_Nickname(gStringVar1, nickname);
+        StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
+    }
 }
 
 static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTrade)
@@ -4866,6 +4886,13 @@ void DoInGameTradeScene(void)
     LockPlayerFieldControls();
     CreateTask(Task_InGameTrade, 10);
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+}
+
+void DoWonderTradeScene(void)
+{
+    gSpecialVar_0x8005 = gSpecialVar_0x8004;
+    sIsWonderTradeScene = TRUE;
+    DoInGameTradeScene();
 }
 
 static void Task_InGameTrade(u8 taskId)
