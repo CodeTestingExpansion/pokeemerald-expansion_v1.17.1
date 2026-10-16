@@ -41,6 +41,12 @@ PetalburgCity_EventScript_WallyTutorial::
 	msgbox Route102_Text_WallyIDidIt, MSGBOX_DEFAULT
 	applymovement LOCALID_PETALBURG_WALLY, Common_Movement_WalkInPlaceFasterLeft, MAP_PETALBURG_CITY
 	waitmovement LOCALID_PETALBURG_WALLY, MAP_PETALBURG_CITY
+	msgbox Route102_Text_Mega1, MSGBOX_DEFAULT
+	playfanfare MUS_OBTAIN_BADGE
+	giveitem ITEM_MEGA_RING
+	giveitem ITEM_Z_POWER_RING
+	waitfanfare
+	msgbox Route102_Text_Mega2, MSGBOX_DEFAULT
 	msgbox Route102_Text_LetsGoBack, MSGBOX_DEFAULT
 	closemessage
 	clearflag FLAG_HIDE_MAP_NAME_POPUP

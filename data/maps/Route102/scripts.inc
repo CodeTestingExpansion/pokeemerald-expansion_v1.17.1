@@ -89,6 +89,14 @@ Route102_Text_LetsGoBack:
 	.string "{PLAYER}, thank you!\n"
 	.string "Let's go back to the GYM!$"
 
+Route102_Text_Mega1:
+	.string "{PLAYER}, wait, before we go back,\n"
+	.string "i want to thank you, so take this!$"	
+
+Route102_Text_Mega2:
+	.string "You can use use these two items to\n"
+	.string "MegaEvolve your Pokémon, or use Z-Moves.!$"
+
 Route102_Text_ImNotVeryTall:
 	.string "I'm…not very tall, so I sink right\n"
 	.string "into tall grass.\p"
