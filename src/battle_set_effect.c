@@ -1056,9 +1056,15 @@ static void HandleSetEffectAuroraVeil(struct BattleCalcValues *cv, struct SetEff
     {
         gSideStatuses[side] |= SIDE_STATUS_AURORA_VEIL;
         if (GetBattlerHoldEffect(se->effectBattler) == HOLD_EFFECT_LIGHT_CLAY)
+        {
             gSideTimers[side].auroraVeilTimer = 8;
+            gSideTimers[side].auroraVeilTimerTotal = 8;
+        }
         else
+        {
             gSideTimers[side].auroraVeilTimer = 5;
+            gSideTimers[side].auroraVeilTimerTotal = 5;
+        }
         gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_SET_AURORA_VEIL;
         BattleScriptPush(se->script);
         gBattlescriptCurrInstr = BattleScript_MoveEffectScreens;
@@ -1247,6 +1253,9 @@ static void HandleSetEffectBreakScreen(struct BattleCalcValues *cv, struct SetEf
             gSideTimers[side].reflectTimer = 0;
             gSideTimers[side].lightscreenTimer = 0;
             gSideTimers[side].auroraVeilTimer = 0;
+            gSideTimers[side].reflectTimerTotal = 0;
+            gSideTimers[side].lightscreenTimerTotal = 0;
+            gSideTimers[side].auroraVeilTimerTotal = 0;
             gSideStatuses[side] &= ~SIDE_STATUS_SCREEN_ANY;
             gBattleScripting.animTurn = 1;
             gBattleScripting.animTargetsHit = 1;
