@@ -63,7 +63,7 @@
 #define FLAG_EXP_SHARE_FLAG_ACTIVE 0x23 // EXP Share is active.
 #define FLAG_VS_SEEKER_FLAG_ACTIVE 0x24 // VS SEEKER is active.
 #define FLAG_FOLLOWER_FLAG_ACTIVE  0x25 // FOLLOWES ACTIVE 
-#define FLAG_UNUSED_0x026    0x26 // Unused Flag
+#define FLAG_UNUSED_0x026    0x26 // WALK WALLS
 #define FLAG_UNUSED_0x027    0x27 // Unused Flag
 #define FLAG_UNUSED_0x028    0x28 // Unused Flag
 #define FLAG_UNUSED_0x029    0x29 // Unused Flag

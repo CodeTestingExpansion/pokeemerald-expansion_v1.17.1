@@ -594,14 +594,29 @@ void BattleSetup_StartLegendaryBattle(void)
     {
     case SPECIES_GROUDON:
     case SPECIES_GROUDON_PRIMAL:
+        u16 customMove = MOVE_PRECIPICE_BLADES;
+        u16 heldItem = ITEM_RED_ORB;
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_MOVE1, &customMove);
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_HELD_ITEM, &heldItem);
+        CalculateMonStats(&gParties[B_TRAINER_OPPONENT_A][0]);
         CreateBattleStartTask(B_TRANSITION_GROUDON, MUS_VS_KYOGRE_GROUDON);
         break;
     case SPECIES_KYOGRE:
     case SPECIES_KYOGRE_PRIMAL:
+        u16 customMove2 = MOVE_ORIGIN_PULSE;
+        u16 heldItem2 = ITEM_BLUE_ORB;
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_MOVE1, &customMove2);
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_HELD_ITEM, &heldItem2);
+        CalculateMonStats(&gParties[B_TRAINER_OPPONENT_A][0]);
         CreateBattleStartTask(B_TRANSITION_KYOGRE, MUS_VS_KYOGRE_GROUDON);
         break;
     case SPECIES_RAYQUAZA:
     case SPECIES_RAYQUAZA_MEGA:
+        u16 customMove3 = MOVE_DRAGON_ASCENT;
+        u16 heldItem3 = ITEM_LIFE_ORB;
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_MOVE1, &customMove3);
+        SetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_HELD_ITEM, &heldItem3);
+        CalculateMonStats(&gParties[B_TRAINER_OPPONENT_A][0]);
         CreateBattleStartTask(B_TRANSITION_RAYQUAZA, MUS_VS_RAYQUAZA);
         break;
     case SPECIES_DEOXYS_NORMAL:

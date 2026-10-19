@@ -43,10 +43,10 @@ SkyPillar_Top_EventScript_RayquazaFaceDown::
 SkyPillar_Top_EventScript_Rayquaza::
 	lockall
 	waitse
-	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_RAYQUAZA_MEGA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_RAYQUAZA, 70
+	setwildbattle SPECIES_RAYQUAZA_MEGA, 70
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

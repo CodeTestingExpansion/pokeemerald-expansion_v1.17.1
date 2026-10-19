@@ -29,11 +29,11 @@ TerraCave_End_EventScript_Groudon::
 	applymovement LOCALID_TERRA_CAVE_GROUDON, TerraCave_End_Movement_GroudonApproach
 	waitmovement 0
 	waitse
-	playmoncry SPECIES_GROUDON, CRY_MODE_ENCOUNTER
+	playmoncry SPECIES_GROUDON_PRIMAL, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, LOCALID_TERRA_CAVE_GROUDON
-	setwildbattle SPECIES_GROUDON, 70
+	setwildbattle SPECIES_GROUDON_PRIMAL, 70
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

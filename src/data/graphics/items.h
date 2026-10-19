@@ -509,6 +509,15 @@ const u16 gItemIconPalette_RetroMail[] = INCGFX_U16("graphics/items/icon_palette
 
 // Evolution Items
 
+const u32 gItemIcon_AlolaStone[] = INCGFX_U32("graphics/items/icons/alola_stone.png", ".4bpp.smol");
+const u16 gItemIconPalette_AlolaStone[] = INCGFX_U16("graphics/items/icon_palettes/alola_stone.pal", ".gbapal");
+
+const u32 gItemIcon_GalarStone[] = INCGFX_U32("graphics/items/icons/galar_stone.png", ".4bpp.smol");
+const u16 gItemIconPalette_GalarStone[] = INCGFX_U16("graphics/items/icon_palettes/galar_stone.pal", ".gbapal");
+
+const u32 gItemIcon_HisuiStone[] = INCGFX_U32("graphics/items/icons/hisui_stone.png", ".4bpp.smol");
+const u16 gItemIconPalette_HisuiStone[] = INCGFX_U16("graphics/items/icon_palettes/hisui_stone.pal", ".gbapal");
+
 const u32 gItemIcon_FireStone[] = INCGFX_U32("graphics/items/icons/fire_stone.png", ".4bpp.smol");
 const u16 gItemIconPalette_FireStone[] = INCGFX_U16("graphics/items/icon_palettes/fire_stone.pal", ".gbapal");
 
