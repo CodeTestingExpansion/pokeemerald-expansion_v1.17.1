@@ -111,6 +111,7 @@ enum
     SPRITE_ARR_ID_MON,
     SPRITE_ARR_ID_BALL,
     SPRITE_ARR_ID_STATUS,
+    SPRITE_ARR_ID_TERATYPE,
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
     SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
@@ -765,6 +766,8 @@ static const u8 sButtons_Gfx[][4 * TILE_SIZE_4BPP] = {
     INCGFX_U8("graphics/summary_screen/b_button.png", ".4bpp"),
 };
 
+static const u32 gTeraTypes_Gfx[] = INCGFX_U32("graphics/types/tera/move_types.4bpp", ".smol");
+
 static void (*const sTextPrinterFunctions[])(void) =
 {
     [PSS_PAGE_INFO] = PrintInfoPageText,
@@ -797,6 +800,7 @@ static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
 #define TAG_CATEGORY_ICONS 30004
 #define TAG_FRIENDSHIP_METER 30005
 #define TAG_GIGANTAMAX_FACTOR 30006
+#define TAG_TERA_TYPES 30007
 
 enum
 {
@@ -1162,6 +1166,20 @@ const struct SpriteTemplate gSpriteTemplate_MoveTypes =
 {
     .tileTag = TAG_MOVE_TYPES,
     .paletteTag = TAG_MOVE_TYPES,
+    .oam = &sOamData_MoveTypes,
+    .anims = sSpriteAnimTable_MoveTypes,
+};
+
+static const struct CompressedSpriteSheet gSpriteSheet_TeraTypes =
+{
+    .data = gTeraTypes_Gfx,
+    .size = (NUMBER_OF_MON_TYPES) * 0x100,
+    .tag = TAG_TERA_TYPES
+};
+static const struct SpriteTemplate gSpriteTemplate_TeraTypes =
+{
+    .tileTag = TAG_TERA_TYPES,
+    .paletteTag = TAG_TERA_TYPES,
     .oam = &sOamData_MoveTypes,
     .anims = sSpriteAnimTable_MoveTypes,
 };
@@ -1648,6 +1666,10 @@ static bool8 DecompressGraphics(void)
         break;
     case 7:
         LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
+        if (P_SHOW_TERA_TYPE >= GEN_9)
+        {
+            LoadCompressedSpriteSheet(&gSpriteSheet_TeraTypes);
+        }
         sMonSummaryScreen->switchCounter++;
         break;
     case 8:
@@ -4500,6 +4522,10 @@ static void HidePageSpecificSprites(void)
         if (sMonSummaryScreen->spriteIds[i] != SPRITE_NONE)
             SetSpriteInvisibility(i, TRUE);
     }
+    if (P_SHOW_TERA_TYPE >= GEN_9 && sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_TERATYPE] != SPRITE_NONE)
+    {
+        SetSpriteInvisibility(SPRITE_ARR_ID_TERATYPE, TRUE);
+    }
 }
 
 static void SetTypeIcons(void)
@@ -4530,6 +4556,11 @@ static void CreateMoveTypeIcons(void)
             sMonSummaryScreen->spriteIds[i] = CreateSprite(&gSpriteTemplate_MoveTypes, 0, 0, 2);
 
         SetSpriteInvisibility(i, TRUE);
+    }
+    if (P_SHOW_TERA_TYPE >= GEN_9 && sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_TERATYPE] == SPRITE_NONE)
+    {
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_TERATYPE] = CreateSprite(&gSpriteTemplate_TeraTypes, 0, 0, 2);
+        SetSpriteInvisibility(SPRITE_ARR_ID_TERATYPE, TRUE);
     }
 }
 
@@ -4568,7 +4599,7 @@ static void SetMonTypeIcons(void)
         }
         if (P_SHOW_TERA_TYPE >= GEN_9)
         {
-            SetTypeSpritePosAndPal(summary->teraType, 200, 48, SPRITE_ARR_ID_TYPE + 2);
+            SetTypeSpritePosAndPal(summary->teraType, 200, 48, SPRITE_ARR_ID_TERATYPE);
         }
     }
 }
