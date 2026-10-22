@@ -9172,3 +9172,309 @@ s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 choose
     return slotId;
 }
 #endif
+
+#define tState      data[0]
+#define tSpecies    data[1]
+#define tAbilityNum data[2]
+#define tMonId      data[3]
+#define tOldFunc    4
+
+void Task_Gigantamax(u8 taskId)
+{
+    static const u8 askText[] = _("Would you like to toogle {STR_VAR_1}'s\nGigantamax factor?");
+    static const u8 doneText[] = _("{STR_VAR_1}'s Gigantamax factor\nwas added!{PAUSE_UNTIL_PRESS}");
+    static const u8 disableText[] = _("{STR_VAR_1}'s Gigantamax factor was removed!{PAUSE_UNTIL_PRESS}");
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+         if (tSpecies == SPECIES_BULBASAUR || tSpecies == SPECIES_IVYSAUR || tSpecies == SPECIES_VENUSAUR ||
+            tSpecies == SPECIES_CHARMANDER || tSpecies == SPECIES_CHARMELEON || tSpecies == SPECIES_CHARIZARD ||
+            tSpecies == SPECIES_SQUIRTLE || tSpecies == SPECIES_WARTORTLE || tSpecies == SPECIES_BLASTOISE ||
+            tSpecies == SPECIES_CATERPIE || tSpecies == SPECIES_METAPOD || tSpecies == SPECIES_BUTTERFREE ||
+            tSpecies == SPECIES_PICHU || tSpecies == SPECIES_PIKACHU || tSpecies == SPECIES_MEOWTH ||
+            tSpecies == SPECIES_MACHOP || tSpecies == SPECIES_MACHOKE || tSpecies == SPECIES_MACHAMP ||
+            tSpecies == SPECIES_GASTLY || tSpecies == SPECIES_HAUNTER || tSpecies == SPECIES_GENGAR ||
+            tSpecies == SPECIES_KRABBY || tSpecies == SPECIES_KINGLER || tSpecies == SPECIES_LAPRAS ||
+            tSpecies == SPECIES_EEVEE || tSpecies == SPECIES_SNORLAX || tSpecies == SPECIES_TRUBBISH ||
+            tSpecies == SPECIES_GARBODOR || tSpecies == SPECIES_MELTAN || tSpecies == SPECIES_MELMETAL ||
+            tSpecies == SPECIES_GROOKEY || tSpecies == SPECIES_THWACKEY || tSpecies == SPECIES_RILLABOOM ||
+            tSpecies == SPECIES_SCORBUNNY || tSpecies == SPECIES_RABOOT || tSpecies == SPECIES_CINDERACE ||
+            tSpecies == SPECIES_SOBBLE || tSpecies == SPECIES_DRIZZILE || tSpecies == SPECIES_INTELEON ||
+            tSpecies == SPECIES_ROOKIDEE || tSpecies == SPECIES_CORVISQUIRE || tSpecies == SPECIES_CORVIKNIGHT ||
+            tSpecies == SPECIES_DOTTLER || tSpecies == SPECIES_BLIPBUG || tSpecies == SPECIES_ORBEETLE ||
+            tSpecies == SPECIES_CHEWTLE || tSpecies == SPECIES_DREDNAW || tSpecies == SPECIES_ROLYCOLY ||
+            tSpecies == SPECIES_CARKOL || tSpecies == SPECIES_COALOSSAL || tSpecies == SPECIES_APPLIN ||
+            tSpecies == SPECIES_FLAPPLE || tSpecies == SPECIES_APPLETUN || tSpecies == SPECIES_SILICOBRA ||
+            tSpecies == SPECIES_SANDACONDA || tSpecies == SPECIES_TOXEL || tSpecies == SPECIES_TOXTRICITY_AMPED ||
+            tSpecies == SPECIES_TOXTRICITY_LOW_KEY || tSpecies == SPECIES_SIZZLIPEDE || tSpecies == SPECIES_CENTISKORCH ||
+            tSpecies == SPECIES_HATENNA || tSpecies == SPECIES_HATTREM || tSpecies == SPECIES_HATTERENE ||
+            tSpecies == SPECIES_IMPIDIMP || tSpecies == SPECIES_MORGREM || tSpecies == SPECIES_GRIMMSNARL ||
+            tSpecies == SPECIES_CUFANT || tSpecies == SPECIES_COPPERAJAH || tSpecies == SPECIES_DURALUDON ||
+            tSpecies == SPECIES_ALCREMIE || tSpecies == SPECIES_ALCREMIE_BERRY || tSpecies == SPECIES_ALCREMIE_BERRY_CARAMEL_SWIRL ||
+            tSpecies == SPECIES_MILCERY || tSpecies == SPECIES_ALCREMIE || tSpecies == SPECIES_ALCREMIE_STRAWBERRY || tSpecies == SPECIES_ALCREMIE_VANILLA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM || tSpecies == SPECIES_ALCREMIE_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_MATCHA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_MINT_CREAM || tSpecies == SPECIES_ALCREMIE_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_SALTED_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_RUBY_SWIRL || tSpecies == SPECIES_ALCREMIE_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_RAINBOW_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_STRAWBERRY_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_STRAWBERRY_MATCHA_CREAM || tSpecies == SPECIES_ALCREMIE_STRAWBERRY_MINT_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_STRAWBERRY_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_STRAWBERRY_SALTED_CREAM || tSpecies == SPECIES_ALCREMIE_STRAWBERRY_RUBY_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_STRAWBERRY_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_STRAWBERRY_RAINBOW_SWIRL || tSpecies == SPECIES_ALCREMIE_BERRY ||
+            tSpecies == SPECIES_ALCREMIE_BERRY_VANILLA_CREAM || tSpecies == SPECIES_ALCREMIE_BERRY_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_BERRY_MATCHA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_BERRY_MINT_CREAM || tSpecies == SPECIES_ALCREMIE_BERRY_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_BERRY_SALTED_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_BERRY_RUBY_SWIRL || tSpecies == SPECIES_ALCREMIE_BERRY_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_BERRY_RAINBOW_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_LOVE || tSpecies == SPECIES_ALCREMIE_LOVE_VANILLA_CREAM || tSpecies == SPECIES_ALCREMIE_LOVE_RUBY_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_LOVE_MATCHA_CREAM || tSpecies == SPECIES_ALCREMIE_LOVE_MINT_CREAM || tSpecies == SPECIES_ALCREMIE_LOVE_LEMON_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_LOVE_SALTED_CREAM || tSpecies == SPECIES_ALCREMIE_LOVE_RUBY_SWIRL || tSpecies == SPECIES_ALCREMIE_LOVE_CARAMEL_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_LOVE_RAINBOW_SWIRL || tSpecies == SPECIES_ALCREMIE_STAR || tSpecies == SPECIES_ALCREMIE_STAR_VANILLA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_STAR_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_STAR_MATCHA_CREAM || tSpecies == SPECIES_ALCREMIE_STAR_MINT_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_STAR_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_STAR_SALTED_CREAM || tSpecies == SPECIES_ALCREMIE_STAR_RUBY_SWIRL || 
+            tSpecies == SPECIES_ALCREMIE_STAR_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_STAR_RAINBOW_SWIRL || tSpecies == SPECIES_ALCREMIE_CLOVER ||
+            tSpecies == SPECIES_ALCREMIE_CLOVER_VANILLA_CREAM || tSpecies == SPECIES_ALCREMIE_CLOVER_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_CLOVER_MATCHA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_CLOVER_MINT_CREAM || tSpecies == SPECIES_ALCREMIE_CLOVER_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_CLOVER_SALTED_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_CLOVER_RUBY_SWIRL || tSpecies == SPECIES_ALCREMIE_CLOVER_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_CLOVER_RAINBOW_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_FLOWER || tSpecies == SPECIES_ALCREMIE_FLOWER_VANILLA_CREAM || tSpecies == SPECIES_ALCREMIE_FLOWER_RUBY_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_FLOWER_MATCHA_CREAM || tSpecies == SPECIES_ALCREMIE_FLOWER_MINT_CREAM || tSpecies == SPECIES_ALCREMIE_FLOWER_LEMON_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_FLOWER_SALTED_CREAM || tSpecies == SPECIES_ALCREMIE_FLOWER_RUBY_SWIRL || tSpecies == SPECIES_ALCREMIE_FLOWER_CARAMEL_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_FLOWER_RAINBOW_SWIRL || tSpecies == SPECIES_ALCREMIE_RIBBON || tSpecies == SPECIES_ALCREMIE_RIBBON_VANILLA_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_RIBBON_RUBY_CREAM || tSpecies == SPECIES_ALCREMIE_RIBBON_MATCHA_CREAM || tSpecies == SPECIES_ALCREMIE_RIBBON_MINT_CREAM ||
+            tSpecies == SPECIES_ALCREMIE_RIBBON_LEMON_CREAM || tSpecies == SPECIES_ALCREMIE_RIBBON_SALTED_CREAM || tSpecies == SPECIES_ALCREMIE_RIBBON_RUBY_SWIRL ||
+            tSpecies == SPECIES_ALCREMIE_RIBBON_CARAMEL_SWIRL || tSpecies == SPECIES_ALCREMIE_RIBBON_RAINBOW_SWIRL)
+            {
+            GetMonNickname(&gParties[B_TRAINER_PLAYER][tMonId], gStringVar1);
+            StringCopy(gStringVar2, gAbilitiesInfo[GetAbilityBySpecies(tSpecies, tAbilityNum)].name);
+            StringExpandPlaceholders(gStringVar4, askText);
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gStringVar4, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            tState++;
+            break;
+            }
+        else 
+            {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+            } 
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState++;
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+            // Don't exit party selections screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(5);
+            gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3: 
+            GetMonNickname(&gParties[B_TRAINER_PLAYER][tMonId], gStringVar1);
+            if (tAbilityNum == FALSE)
+            {
+                PlaySE(SE_USE_ITEM);
+                StringExpandPlaceholders(gStringVar4, doneText);
+                DisplayPartyMenuMessage(gStringVar4, 1);
+                ScheduleBgCopyTilemapToVram(2);
+                tState++;
+                break;
+            }
+            else
+            {
+                PlaySE(SE_USE_ITEM);
+                StringExpandPlaceholders(gStringVar4, disableText);
+                DisplayPartyMenuMessage(gStringVar4, 1);
+                ScheduleBgCopyTilemapToVram(2);
+                tState++;
+                break;
+            }   
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+         if (tAbilityNum == TRUE) //Remove factor
+            {
+            bool32 gigantamaxFactor;    
+            gigantamaxFactor = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+            gigantamaxFactor = !gigantamaxFactor;
+            SetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR, &gigantamaxFactor);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            gTasks[taskId].func = Task_ClosePartyMenu;
+            break;
+            }
+            else // Add factor
+            {
+            bool32 gigantamaxFactor;    
+            gigantamaxFactor = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+            gigantamaxFactor = !gigantamaxFactor;
+            SetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR, &gigantamaxFactor);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            gTasks[taskId].func = Task_ClosePartyMenu;
+            break;
+            }
+    }
+}
+
+void ItemUseCB_Gigantamax(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tSpecies = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_SPECIES, NULL);
+    tAbilityNum = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_Gigantamax;
+}
+
+#undef tState
+#undef tSpecies
+#undef tAbilityNum
+#undef tMonId
+#undef tOldFunc
+
+#define tState      data[0]
+#define tSpecies    data[1]
+#define tAbilityNum data[2]
+#define tMonId      data[3]
+#define tOldFunc    4
+
+void Task_Gigantamax2(u8 taskId)
+{
+    static const u8 askText[] = _("Would you like to toogle {STR_VAR_1}'s\nGigantamax factor?");
+    static const u8 doneText[] = _("{STR_VAR_1}'s Gigantamax factor\nwas added!{PAUSE_UNTIL_PRESS}");
+    static const u8 disableText[] = _("{STR_VAR_1}'s Gigantamax factor was removed!{PAUSE_UNTIL_PRESS}");
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+         if (tSpecies == SPECIES_KUBFU || tSpecies == SPECIES_URSHIFU_RAPID_STRIKE || tSpecies == SPECIES_URSHIFU_SINGLE_STRIKE)
+            {
+            GetMonNickname(&gParties[B_TRAINER_PLAYER][tMonId], gStringVar1);
+            StringCopy(gStringVar2, gAbilitiesInfo[GetAbilityBySpecies(tSpecies, tAbilityNum)].name);
+            StringExpandPlaceholders(gStringVar4, askText);
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gStringVar4, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            tState++;
+            break;
+            }
+        else 
+            {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+            } 
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState++;
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+            // Don't exit party selections screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(5);
+            gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3: 
+            GetMonNickname(&gParties[B_TRAINER_PLAYER][tMonId], gStringVar1);
+            if (tAbilityNum == FALSE)
+            {
+                PlaySE(SE_USE_ITEM);
+                StringExpandPlaceholders(gStringVar4, doneText);
+                DisplayPartyMenuMessage(gStringVar4, 1);
+                ScheduleBgCopyTilemapToVram(2);
+                tState++;
+                break;
+            }
+            else
+            {
+                PlaySE(SE_USE_ITEM);
+                StringExpandPlaceholders(gStringVar4, disableText);
+                DisplayPartyMenuMessage(gStringVar4, 1);
+                ScheduleBgCopyTilemapToVram(2);
+                tState++;
+                break;
+            }   
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+         if (tAbilityNum == TRUE) //Remove factor
+            {
+            bool32 gigantamaxFactor;    
+            gigantamaxFactor = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+            gigantamaxFactor = !gigantamaxFactor;
+            SetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR, &gigantamaxFactor);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            gTasks[taskId].func = Task_ClosePartyMenu;
+            break;
+            }
+            else // Add factor
+            {
+            bool32 gigantamaxFactor;    
+            gigantamaxFactor = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+            gigantamaxFactor = !gigantamaxFactor;
+            SetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR, &gigantamaxFactor);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            gTasks[taskId].func = Task_ClosePartyMenu;
+            break;
+            }
+    }
+}
+
+void ItemUseCB_Gigantamax2(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tSpecies = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_SPECIES, NULL);
+    tAbilityNum = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_GIGANTAMAX_FACTOR);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_Gigantamax2;
+}
+
+#undef tState
+#undef tSpecies
+#undef tAbilityNum
+#undef tMonId
+#undef tOldFunc

@@ -3452,4 +3452,10 @@ extern const u16 gSummaryScreenFriendshipMeter_Pal[];
 extern const u32 gSummaryScreenGigantamaxFactor_Gfx[];
 extern const u16 gSummaryScreenGigantamaxFactor_Pal[];
 
+extern const u32 gItemIcon_MaxSoup[];
+extern const u16 gItemIconPalette_MaxSoup[];
+
+extern const u32 gItemIcon_SweetMaxSoup[];
+extern const u16 gItemIconPalette_SweetMaxSoup[];
+
 #endif //GUARD_GRAPHICS_H

@@ -2087,6 +2087,38 @@ const struct ItemInfo gItemsInfo[] =
         .iconPalette = gItemIconPalette_DynamaxCandy,
     },
 
+    [ITEM_MAX_SOUP] =
+    {
+        .name = ITEM_NAME("Max Soup"),
+        .price = 50000,
+        .description = COMPOUND_STRING(
+            "This item makes\n"
+            "you pokemon able\n"
+            "to Gigantammax."),
+        .pocket = POCKET_BATTLEITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Gigantamax,
+        .flingPower = 30,
+        .iconPic = gItemIcon_MaxSoup,
+        .iconPalette = gItemIconPalette_MaxSoup,
+    },
+
+        [ITEM_SWEET_MAX_SOUP] =
+    {
+        .name = ITEM_NAME("Sweet Max Soup"),
+        .price = 50000,
+        .description = COMPOUND_STRING(
+            "This item makes\n"
+            "a certain pokemon\n"
+            "able to Gigantammax."),
+        .pocket = POCKET_BATTLEITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Gigantamax2,
+        .flingPower = 30,
+        .iconPic = gItemIcon_SweetMaxSoup,
+        .iconPalette = gItemIconPalette_SweetMaxSoup,
+    },
+
 // Medicinal Flutes
 
     [ITEM_BLUE_FLUTE] =

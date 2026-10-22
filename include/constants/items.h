@@ -1056,6 +1056,8 @@ enum __attribute__((packed)) Item
     ITEM_ALOLA_STONE = 874,
     ITEM_GALAR_STONE = 875,
     ITEM_HISUI_STONE = 876,
+    ITEM_MAX_SOUP = 877,
+    ITEM_SWEET_MAX_SOUP = 878,
 
     ITEMS_COUNT,
     ITEM_FIELD_ARROW = ITEMS_COUNT,

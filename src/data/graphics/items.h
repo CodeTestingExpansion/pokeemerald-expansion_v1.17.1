@@ -2121,3 +2121,9 @@ const u16 gItemIconPalette_SwapSnack[] = INCGFX_U16("graphics/items/icon_palette
 
 const u32 gItemIcon_TwiceSpicedRadish[] = INCGFX_U32("graphics/items/icons/twice_spiced_radish.png", ".4bpp.smol");
 const u16 gItemIconPalette_TwiceSpicedRadish[] = INCGFX_U16("graphics/items/icon_palettes/twice_spiced_radish.pal", ".gbapal");
+
+const u32 gItemIcon_MaxSoup[] = INCBIN_U32("graphics/items/icons/max_soup.4bpp.lz");
+const u16 gItemIconPalette_MaxSoup[] = INCBIN_U16("graphics/items/icon_palettes/max_soup.gbapal");
+
+const u32 gItemIcon_SweetMaxSoup[] = INCBIN_U32("graphics/items/icons/sweet_max_soup.4bpp.lz");
+const u16 gItemIconPalette_SweetMaxSoup[] = INCBIN_U16("graphics/items/icon_palettes/sweet_max_soup.gbapal");

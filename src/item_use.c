@@ -869,6 +869,18 @@ void ItemUseOutOfBattle_Mint(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+void ItemUseOutOfBattle_Gigantamax(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Gigantamax;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_Gigantamax2(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Gigantamax2;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_ResetEVs(u8 taskId)
 {
     gItemUseCB = ItemUseCB_ResetEVs;
