@@ -135,3 +135,38 @@ EverGrandeCity_PokemonLeague_1F_Text_GoForth:
 	.string "TRAINER! Believe in yourself and your\n"
 	.string "POKéMON, and go forth!$"
 
+EverGrandeCity_PokemonLeague_1F_EventScript_StevenTickets::
+    lock
+    faceplayer
+    goto_if_set FLAG_EVENT_ITEMS, EverGrandeCity_PokemonLeague_1F_EventScript_StevenDisappeared
+    msgbox EverGrandeCity_PokemonLeague_1F_Text_Steven, MSGBOX_DEFAULT
+    giveitem ITEM_EON_TICKET, 1
+    setflag FLAG_ENABLE_SHIP_SOUTHERN_ISLAND
+    giveitem ITEM_MYSTIC_TICKET, 1
+    setflag FLAG_ENABLE_SHIP_NAVEL_ROCK
+    giveitem ITEM_AURORA_TICKET, 1
+    setflag FLAG_ENABLE_SHIP_BIRTH_ISLAND
+    giveitem ITEM_OLD_SEA_MAP, 1
+    setflag FLAG_ENABLE_SHIP_FARAWAY_ISLAND
+    msgbox EverGrandeCity_PokemonLeague_1F_Text_Steven2, MSGBOX_DEFAULT
+    closemessage
+    fadescreen FADE_TO_BLACK
+    removeobject VAR_LAST_TALKED
+    setflag FLAG_EVENT_ITEMS
+    fadescreen FADE_FROM_BLACK
+    release
+    end
+
+EverGrandeCity_PokemonLeague_1F_EventScript_StevenDisappeared::
+    release
+    end
+
+EverGrandeCity_PokemonLeague_1F_Text_Steven:
+    .string "STEVEN: Hi, so you've made it to the\n"
+    .string "POKéMON LEAGUE. I knew you would do it.\l"
+    .string "I will give you this to celebrate!$"
+
+EverGrandeCity_PokemonLeague_1F_Text_Steven2:
+    .string "STEVEN: These will allow you to face\n"
+    .string "some of the strongest POKéMON that i've\l"
+    .string "ever seen. Good Luck, see you latter!$"

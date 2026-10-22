@@ -3,7 +3,6 @@
   "name": "EverGrandeCity_PokemonLeague_1F",
   "layout": "LAYOUT_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F",
   "music": "MUS_POKE_CENTER",
-  "region": "REGION_HOENN",
   "region_map_section": "MAPSEC_EVER_GRANDE_CITY",
   "requires_flash": false,
   "weather": "WEATHER_NONE",
@@ -69,6 +68,19 @@
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EverGrandeCity_PokemonLeague_1F_EventScript_DoorGuard",
       "flag": "0"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 17,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "EverGrandeCity_PokemonLeague_1F_EventScript_StevenTickets",
+      "flag": "FLAG_EVENT_ITEMS"
     }
   ],
   "warp_events": [
@@ -109,5 +121,6 @@
     }
   ],
   "coord_events": [],
-  "bg_events": []
+  "bg_events": [],
+  "region": "REGION_HOENN"
 }

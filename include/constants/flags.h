@@ -64,9 +64,9 @@
 #define FLAG_VS_SEEKER_FLAG_ACTIVE 0x24 // VS SEEKER is active.
 #define FLAG_FOLLOWER_FLAG_ACTIVE  0x25 // FOLLOWES ACTIVE 
 #define FLAG_UNUSED_0x026    0x26 // WALK WALLS
-#define FLAG_UNUSED_0x027    0x27 // Unused Flag
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
-#define FLAG_UNUSED_0x029    0x29 // Unused Flag
+#define FLAG_UNUSED_0x027    0x27 // NO BATTLES
+#define FLAG_UNUSED_0x028    0x28 // NO ENCOUNTERS
+#define FLAG_EVENT_ITEMS     0x29 // EVENT ITEMS
 #define FLAG_UNUSED_0x02A    0x2A // Unused Flag
 #define FLAG_UNUSED_0x02B    0x2B // Unused Flag
 #define FLAG_UNUSED_0x02C    0x2C // Unused Flag
