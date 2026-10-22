@@ -80,6 +80,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "battle_main.h"
 
 enum {
     MENU_SUMMARY,
@@ -9477,4 +9478,113 @@ void ItemUseCB_Gigantamax2(u8 taskId, TaskFunc task)
 #undef tSpecies
 #undef tAbilityNum
 #undef tMonId
+#undef tOldFunc
+
+//--TeraType
+#define tState      data[0]
+#define tMonId      data[1]
+#define tOldType    data[2]
+#define tNewType    data[3]
+#define tOldFunc    4
+
+void Task_Tera(u8 taskId)
+{
+    static const u8 askText[] = _("{STR_VAR_1}'s Tera Type is {STR_VAR_2}.\nDo you want to change it to {STR_VAR_3}?");
+    static const u8 doneText[] = _("{STR_VAR_1}'s Tera Type is now {STR_VAR_3}!{PAUSE_UNTIL_PRESS}");
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+        // New type equal to the actual
+        if (tOldType == tNewType)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, 1);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+        }
+
+        gPartyMenuUseExitCallback = TRUE;
+
+        // Pokémon nickname.
+        GetMonNickname(&gParties[B_TRAINER_PLAYER][tMonId], gStringVar1);
+
+        // Current Tera Type.
+        StringCopy(gStringVar2, gTypesInfo[tOldType].name);
+
+        // New Tera Type.
+        StringCopy(gStringVar3, gTypesInfo[tNewType].name);
+
+        StringExpandPlaceholders(gStringVar4, askText);
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+    case 0:
+            tState++;
+            break;
+    case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+            // Don't exit party selections screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(5);
+            gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3:
+        PlaySE(SE_USE_ITEM);
+        StringCopy(gStringVar3, gTypesInfo[tNewType].name);
+        StringExpandPlaceholders(gStringVar4, doneText);
+        DisplayPartyMenuMessage(gStringVar4, 1);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+        SetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_TERA_TYPE, &tNewType);
+        CalculateMonStats(&gParties[B_TRAINER_PLAYER][tMonId]);
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+        gTasks[taskId].func = Task_ClosePartyMenu;
+        break;
+    }
+}
+
+void ItemUseCB_Tera(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tOldType = GetMonData(&gParties[B_TRAINER_PLAYER][tMonId], MON_DATA_TERA_TYPE);
+    tNewType = GetItemSecondaryId(gSpecialVar_ItemId);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_Tera;
+}
+
+#undef tState
+#undef tMonId
+#undef tOldType
+#undef tNewType
 #undef tOldFunc
