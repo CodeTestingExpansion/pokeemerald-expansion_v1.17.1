@@ -53,6 +53,8 @@
   - [How to use Dynamic Shop](tutorials/how_to_dynamic_shop.md)
   - [How to use Mass Outbreak](tutorials/how_to_mass_outbreak.md)
   - [How to use Overworld Wild Encounters](tutorials/how_to_overworld_wild_encounters.md)
+  - [How to use the Wonder Trade script](tutorials/how_to_wonder_trade.md)
+  - [Altering Cave Encounter Tables](tutorials/how_to_altering_cave_encounters.md)
   - [How to use Dynamic Weather](tutorials/how_to_dynamic_weather.md)
   - [How to use Random Mon Generation](tutorials/how_to_random_mon_generator.md)
   - [How to use dynamic trainer battle scripts](tutorials/how_to_dynamic_trainer_script.md)

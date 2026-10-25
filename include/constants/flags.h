@@ -67,21 +67,21 @@
 #define FLAG_UNUSED_0x027    0x27 // NO BATTLES
 #define FLAG_UNUSED_0x028    0x28 // NO ENCOUNTERS
 #define FLAG_EVENT_ITEMS     0x29 // EVENT ITEMS
-#define FLAG_UNUSED_0x02A    0x2A // Unused Flag
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
-#define FLAG_UNUSED_0x02D    0x2D // Unused Flag
-#define FLAG_UNUSED_0x02E    0x2E // Unused Flag
-#define FLAG_UNUSED_0x02F    0x2F // Unused Flag
-#define FLAG_UNUSED_0x030    0x30 // Unused Flag
-#define FLAG_UNUSED_0x031    0x31 // Unused Flag
-#define FLAG_UNUSED_0x032    0x32 // Unused Flag
-#define FLAG_UNUSED_0x033    0x33 // Unused Flag
-#define FLAG_UNUSED_0x034    0x34 // Unused Flag
-#define FLAG_UNUSED_0x035    0x35 // Unused Flag
-#define FLAG_UNUSED_0x036    0x36 // Unused Flag
-#define FLAG_UNUSED_0x037    0x37 // Unused Flag
-#define FLAG_UNUSED_0x038    0x38 // Unused Flag
+#define FLAG_ALT_CAVE        0x2A // ALTERING CAVE
+#define FLAG_OW_ENCOUNTERS   0x2B // Overworld Encounters
+#define FLAG_ALTERING_CAVE_REGION_KANTO       0x2C // KANTO
+#define FLAG_ALTERING_CAVE_REGION_JOHTO       0x2D // JOHTO
+#define FLAG_ALTERING_CAVE_REGION_HOENN       0x2E // HOENN
+#define FLAG_ALTERING_CAVE_REGION_SINNOH      0x2F // SINNOH
+#define FLAG_ALTERING_CAVE_REGION_UNOVA       0x30 // UNOVA
+#define FLAG_ALTERING_CAVE_REGION_KALOS       0x31 // KALOS
+#define FLAG_ALTERING_CAVE_REGION_ALOLA       0x32 // ALOLA
+#define FLAG_ALTERING_CAVE_REGION_GALAR       0x33 // GALAR
+#define FLAG_ALTERING_CAVE_REGION_HISUI       0x34 // HISUI
+#define FLAG_ALTERING_CAVE_REGION_PALDEA      0x35 // PALDEA
+#define FLAG_ALTERING_CAVE_REGION_PARADOX     0x36 // PARADOX
+#define FLAG_ALTERING_CAVE_REGION_ULTRA_BEASTS 0x37 // ULTRA BEASTS
+#define FLAG_ALTERING_CAVE_REGION_UNOWN       0x38 // UNOWN
 #define FLAG_UNUSED_0x039    0x39 // Unused Flag
 #define FLAG_UNUSED_0x03A    0x3A // Unused Flag
 #define FLAG_UNUSED_0x03B    0x3B // Unused Flag

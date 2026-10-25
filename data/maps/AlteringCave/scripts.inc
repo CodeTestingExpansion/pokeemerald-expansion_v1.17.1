@@ -4,5 +4,5 @@ AlteringCave_MapScripts::
 
 AlteringCave_OnTransition:
 	setflag FLAG_LANDMARK_ALTERING_CAVE
+	setflag FLAG_OW_ENCOUNTERS
 	end
-

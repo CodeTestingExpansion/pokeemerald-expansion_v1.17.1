@@ -388,7 +388,6 @@ PalletTown_Movement_SignLadyMoveOutOfWayLeft::
 
 PalletTown_EventScript_FatMan::
 	msgbox PalletTown_Text_CanStoreItemsAndMonsInPC, MSGBOX_NPC
-	call EventScript_WonderTrade
 	end
 
 PalletTown_EventScript_OaksLabSign::

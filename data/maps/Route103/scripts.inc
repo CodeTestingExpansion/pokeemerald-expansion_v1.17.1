@@ -4,9 +4,15 @@ Route103_MapScripts::
 	.byte 0
 
 Route103_OnTransition:
+	call_if_set FLAG_OW_ENCOUNTERS, Route103_EventScript_ResetAlteringCaveEncounter
+	clearflag FLAG_OW_ENCOUNTERS
 	call Common_EventScript_SetupRivalGfxId
 	call ProfBirch_EventScript_UpdateLocation
 	end
+
+Route103_EventScript_ResetAlteringCaveEncounter:
+	setvar VAR_ENCOUNTER_TABLE, 0
+	return
 
 Route103_OnLoad:
 	call_if_set FLAG_SYS_GAME_CLEAR, Route103_EventScript_OpenAlteringCave
@@ -350,4 +356,3 @@ Route103_Text_ShortcutToOldale:
 Route103_Text_RouteSign:
 	.string "ROUTE 103\n"
 	.string "{DOWN_ARROW} OLDALE TOWN$"
-
