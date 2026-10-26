@@ -2,90 +2,16 @@
 #include "event_data.h"
 #include "pokemon.h"
 #include "random.h"
+#include "random_mon_generation.h"
 #include "script.h"
 #include "string_util.h"
 #include "trade.h"
 #include "wonder_trade.h"
 #include "constants/items.h"
 #include "constants/pokemon.h"
+#include "constants/random_mon_generation.h"
 #include "constants/species.h"
 #include "constants/wonder_trade.h"
-
-static const enum Species sWonderTradeKantoSpecies[] =
-{
-    SPECIES_BULBASAUR,
-    SPECIES_CHARMANDER,
-    SPECIES_SQUIRTLE,
-};
-
-static const enum Species sWonderTradeJohtoSpecies[] =
-{
-    SPECIES_CHIKORITA,
-    SPECIES_CYNDAQUIL,
-    SPECIES_TOTODILE,
-};
-
-static const enum Species sWonderTradeHoennSpecies[] =
-{
-    SPECIES_TREECKO,
-    SPECIES_TORCHIC,
-    SPECIES_MUDKIP,
-};
-
-static const enum Species sWonderTradeSinnohSpecies[] =
-{
-    SPECIES_TURTWIG,
-    SPECIES_CHIMCHAR,
-    SPECIES_PIPLUP,
-};
-
-static const enum Species sWonderTradeUnovaSpecies[] =
-{
-    SPECIES_SNIVY,
-    SPECIES_TEPIG,
-    SPECIES_OSHAWOTT,
-};
-
-static const enum Species sWonderTradeKalosSpecies[] =
-{
-    SPECIES_CHESPIN,
-    SPECIES_FENNEKIN,
-    SPECIES_FROAKIE,
-};
-
-static const enum Species sWonderTradeAlolaSpecies[] =
-{
-    SPECIES_ROWLET,
-    SPECIES_LITTEN,
-    SPECIES_POPPLIO,
-};
-
-static const enum Species sWonderTradeGalarSpecies[] =
-{
-    SPECIES_GROOKEY,
-    SPECIES_SCORBUNNY,
-    SPECIES_SOBBLE,
-};
-
-static const enum Species sWonderTradePaldeaSpecies[] =
-{
-    SPECIES_SPRIGATITO,
-    SPECIES_FUECOCO,
-    SPECIES_QUAXLY,
-};
-
-static const enum Species *const sWonderTradeRegionalSpecies[] =
-{
-    sWonderTradeKantoSpecies,
-    sWonderTradeJohtoSpecies,
-    sWonderTradeHoennSpecies,
-    sWonderTradeSinnohSpecies,
-    sWonderTradeUnovaSpecies,
-    sWonderTradeKalosSpecies,
-    sWonderTradeAlolaSpecies,
-    sWonderTradeGalarSpecies,
-    sWonderTradePaldeaSpecies,
-};
 
 static const enum Item sWonderTradeItems[] =
 {
@@ -221,54 +147,13 @@ static const u8 sWonderTradeFemaleOtNames[][TRAINER_NAME_LENGTH + 1] =
     _("BECCA"),
 };
 
-static bool32 IsWonderTradeSpeciesAllowed(enum Species species)
-{
-    if (species <= SPECIES_NONE || species >= NUM_SPECIES || !IsSpeciesEnabled(species))
-        return FALSE;
-
-    if (gSpeciesInfo[species].isRestrictedLegendary
-     || gSpeciesInfo[species].isSubLegendary
-     || gSpeciesInfo[species].isMythical
-     || gSpeciesInfo[species].isParadox
-     || gSpeciesInfo[species].isUltraBeast
-     || gSpeciesInfo[species].isTotem
-     || gSpeciesInfo[species].isMegaEvolution
-     || gSpeciesInfo[species].isPrimalReversion
-     || gSpeciesInfo[species].isUltraBurst
-     || gSpeciesInfo[species].isGigantamax
-     || gSpeciesInfo[species].isTeraForm
-     || gSpeciesInfo[species].cannotBeTraded)
-        return FALSE;
-
-    for (u32 i = 0; i < NUM_ABILITY_SLOTS; i++)
-    {
-        if (GetSpeciesAbility(species, i) != ABILITY_NONE)
-            return TRUE;
-    }
-
-    return FALSE;
-}
-
 static enum Species GetRandomWonderTradeSpecies(void)
 {
-    enum Species validSpecies[ARRAY_COUNT(sWonderTradeKantoSpecies)];
-    u32 validSpeciesCount = 0;
-    u32 region = RandomUniform(RNG_NONE, 0, ARRAY_COUNT(sWonderTradeRegionalSpecies) - 1);
-    const enum Species *regionalSpecies = sWonderTradeRegionalSpecies[region];
-
-    for (u32 i = 0; i < ARRAY_COUNT(sWonderTradeKantoSpecies); i++)
-    {
-        if (IsWonderTradeSpeciesAllowed(regionalSpecies[i]))
-            validSpecies[validSpeciesCount++] = regionalSpecies[i];
-    }
-
-    if (validSpeciesCount == 0)
-        return SPECIES_NONE;
-
-    return validSpecies[RandomUniform(RNG_NONE, 0, validSpeciesCount - 1)];
+    const struct FilterFuncArgs filterFuncArgs = {0};
+    return GetRandomSpecies(SPECIES_GENERATOR_NO_SUPERMONS, &filterFuncArgs);
 }
 
-static bool32 GetRandomWonderTradeAbilityNum(enum Species species, u8 *abilityNum)
+static u8 GetRandomWonderTradeAbilityNum(enum Species species)
 {
     u8 abilitySlots[NUM_ABILITY_SLOTS];
     u8 abilityCount = 0;
@@ -280,10 +165,9 @@ static bool32 GetRandomWonderTradeAbilityNum(enum Species species, u8 *abilityNu
     }
 
     if (abilityCount == 0)
-        return FALSE;
+        return 0;
 
-    *abilityNum = abilitySlots[RandomUniform(RNG_NONE, 0, abilityCount - 1)];
-    return TRUE;
+    return abilitySlots[RandomUniform(RNG_NONE, 0, abilityCount - 1)];
 }
 
 static u32 GetRandomWonderTradeOtId(void)
@@ -323,8 +207,7 @@ u32 WonderTradeSelectedMon(void)
         return WONDER_TRADE_NO_ELIGIBLE_SPECIES;
 
     level = GetMonData(offeredMon, MON_DATA_LEVEL);
-    if (!GetRandomWonderTradeAbilityNum(receivedSpecies, &abilityNum))
-        return WONDER_TRADE_NO_ELIGIBLE_SPECIES;
+    abilityNum = GetRandomWonderTradeAbilityNum(receivedSpecies);
 
     otGender = RandomUniform(RNG_NONE, 0, GENDER_COUNT - 1);
     if (otGender == MALE)

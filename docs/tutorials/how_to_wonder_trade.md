@@ -4,7 +4,6 @@ Wonder Trade is a reusable event script. Attach `call EventScript_WonderTrade` t
 
 Edit the tables near the top of `src/wonder_trade.c` to customize:
 
-- The nine `sWonderTrade*Species` arrays list the starters for each region, from Kanto through Paldea. Wonder Trade chooses a region at random, then chooses one eligible pokémon from that region (listed in each array). Only species in the regional arrays are checked; Disabled, legendary, mythical, Paradox, Ultra Beast, and battle-only forms (such as Mega, Primal, Totem, and Gigantamax forms) are filtered out.
 - `sWonderTradeItems`: the possible held items. Include `ITEM_NONE` to allow a Pokémon to arrive without an item (by default, if the pokemon has an item, it will allways be a random berry).
 - `sWonderTradeOtNames`: male and female original-trainer name pools.
 

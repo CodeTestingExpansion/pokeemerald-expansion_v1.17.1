@@ -85,6 +85,7 @@
 enum {
     MENU_SUMMARY,
     MENU_WONDER_TRADE,
+    MENU_WONDER_TRADE_ITEM,
     MENU_SWITCH,
     MENU_FOLLOWER,
     MENU_FOLLOWER_SET,
@@ -338,6 +339,10 @@ static void Task_CancelChooseMonYesNo(u8);
 static void PartyMenuDisplayYesNoMenu(void);
 static void Task_HandleCancelChooseMonYesNoInput(u8);
 static void Task_ReturnToChooseMonAfterText(u8);
+static void Task_WonderTradeItemYesNo(u8);
+static void Task_HandleWonderTradeItemYesNoInput(u8);
+static void Task_WonderTradeMailLossYesNo(u8);
+static void Task_HandleWonderTradeMailLossYesNoInput(u8);
 static void UpdateCurrentPartySelection(s8 *, s8);
 static void UpdatePartySelectionSingleLayout(s8 *, s8);
 static void UpdatePartySelectionDoubleLayout(s8 *, s8);
@@ -501,6 +506,7 @@ static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, bool8);
 static void BlitBitmapToPartyWindow_RightColumn(u8, u8, u8, u8, u8, bool8);
 static void CursorCb_Summary(u8);
 static void CursorCb_WonderTradeInitiate(u8);
+static void CursorCb_WonderTradeItem(u8);
 static void CursorCb_Switch(u8);
 static void CursorCb_Cancel1(u8);
 static void CursorCb_Item(u8);
@@ -2913,7 +2919,7 @@ static u8 DisplaySelectionWindow(u8 windowType)
     {
     case SELECTWINDOW_ACTIONS:
         if (gPartyMenu.menuType == PARTY_MENU_TYPE_WONDER_TRADE)
-            SetWindowTemplateFields(&window, 2, 17, 10, 13, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
+            SetWindowTemplateFields(&window, 2, 19, 10, 10, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
         else
             SetWindowTemplateFields(&window, 2, 19, 19 - (sPartyMenuInternal->numActions * 2), 10, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
         break;
@@ -3272,6 +3278,135 @@ static void CursorCb_WonderTradeInitiate(u8 taskId)
     PlaySE(SE_SELECT);
     gSpecialVar_0x8005 = TRUE;
     Task_ClosePartyMenu(taskId);
+}
+
+static void CursorCb_WonderTradeItem(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+    enum Item item = GetMonData(mon, MON_DATA_HELD_ITEM);
+
+    PlaySE(SE_SELECT);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    if (item == ITEM_NONE)
+    {
+        GetMonNickname(mon, gStringVar1);
+        StringExpandPlaceholders(gStringVar4, gText_WonderTradePkmnNotHoldingItem);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_UpdateHeldItemSprite;
+    }
+    else
+    {
+        CopyItemName(item, gStringVar2);
+        StringExpandPlaceholders(gStringVar4, gText_WonderTradeReturnItemToBag);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_WonderTradeItemYesNo;
+    }
+    ScheduleBgCopyTilemapToVram(2);
+}
+
+static void Task_WonderTradeItemYesNo(u8 taskId)
+{
+    if (IsPartyMenuTextPrinterActive() != TRUE)
+    {
+        PartyMenuDisplayYesNoMenu();
+        gTasks[taskId].func = Task_HandleWonderTradeItemYesNoInput;
+    }
+}
+
+static void Task_HandleWonderTradeItemYesNoInput(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+    switch (Menu_ProcessInputNoWrapClearOnChoose())
+    {
+    case 0:
+    {
+        enum Item item = GetMonData(mon, MON_DATA_HELD_ITEM);
+        enum TryTakeMonItemResult result;
+
+        if (ItemIsMail(item))
+        {
+            DisplayPartyMenuMessage(gText_MailMessageWillBeLost, TRUE);
+            gTasks[taskId].func = Task_WonderTradeMailLossYesNo;
+            break;
+        }
+
+        result = TryTakeMonItem(mon);
+        switch (result)
+        {
+        case TAKE_OK:
+            CopyItemName(item, gStringVar2);
+            StringExpandPlaceholders(gStringVar4, gText_WonderTradeItemPutInBag);
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            gTasks[taskId].func = Task_UpdateHeldItemSprite;
+            break;
+        case TAKE_NO_BAG_SPACE:
+            BufferBagFullCantTakeItemMessage();
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            break;
+        case TAKE_NO_ITEM:
+            GetMonNickname(mon, gStringVar1);
+            StringExpandPlaceholders(gStringVar4, gText_WonderTradePkmnNotHoldingItem);
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            break;
+        }
+        break;
+    }
+    case MENU_B_PRESSED:
+        PlaySE(SE_SELECT);
+        // fallthrough
+    case 1:
+        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        break;
+    }
+}
+
+static void Task_WonderTradeMailLossYesNo(u8 taskId)
+{
+    if (IsPartyMenuTextPrinterActive() != TRUE)
+    {
+        PartyMenuDisplayYesNoMenu();
+        gTasks[taskId].func = Task_HandleWonderTradeMailLossYesNoInput;
+    }
+}
+
+static void Task_HandleWonderTradeMailLossYesNoInput(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gPartyMenu.slotId];
+
+    switch (Menu_ProcessInputNoWrapClearOnChoose())
+    {
+    case 0:
+    {
+        enum Item item = GetMonData(mon, MON_DATA_HELD_ITEM);
+
+        if (AddBagItem(item, 1))
+        {
+            TakeMailFromMon(mon);
+            CopyItemName(item, gStringVar2);
+            StringExpandPlaceholders(gStringVar4, gText_WonderTradeItemPutInBag);
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            gTasks[taskId].func = Task_UpdateHeldItemSprite;
+        }
+        else
+        {
+            BufferBagFullCantTakeItemMessage();
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        }
+        break;
+    }
+    case MENU_B_PRESSED:
+        PlaySE(SE_SELECT);
+        // fallthrough
+    case 1:
+        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        break;
+    }
 }
 
 static void CB2_ShowPokemonSummaryScreen(void)

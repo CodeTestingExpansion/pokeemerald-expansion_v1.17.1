@@ -260,6 +260,9 @@ extern const u8 gText_SwitchedPkmnItem[];
 extern const u8 gText_BagFullCouldNotRemoveItem[];
 extern const u8 gText_PkmnCantParticipate[];
 extern const u8 gText_PkmnNotHolding[];
+extern const u8 gText_WonderTradePkmnNotHoldingItem[];
+extern const u8 gText_WonderTradeReturnItemToBag[];
+extern const u8 gText_WonderTradeItemPutInBag[];
 extern const u8 gText_ThrowAwayItem[];
 extern const u8 gText_ItemThrownAway[];
 extern const u8 gText_SendMailToPC[];
@@ -1328,6 +1331,7 @@ extern const u8 gText_CantTradeWithTrainer[];
 
 // trade
 extern const u8 gText_XWillBeSentToY[];
+extern const u8 gText_WonderTradeMonWillBeTraded[];
 extern const u8 gText_ByeByeVar1[];
 extern const u8 gText_XSentOverY[];
 extern const u8 gText_TakeGoodCareOfX[];

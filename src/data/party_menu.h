@@ -829,7 +829,8 @@ struct
 } static const sCursorOptions[MENU_FIELD_MOVES] =
 {
     [MENU_SUMMARY]         = {COMPOUND_STRING("SUMMARY"),         CursorCb_Summary},
-    [MENU_WONDER_TRADE]    = {COMPOUND_STRING("INITIATE TRADE"),  CursorCb_WonderTradeInitiate},
+    [MENU_WONDER_TRADE]    = {COMPOUND_STRING("TRADE"),           CursorCb_WonderTradeInitiate},
+    [MENU_WONDER_TRADE_ITEM] = {COMPOUND_STRING("ITEM"),          CursorCb_WonderTradeItem},
     [MENU_SWITCH]          = {COMPOUND_STRING("SWITCH"),          CursorCb_Switch},
     [MENU_CANCEL1]         = {gText_Cancel2,                      CursorCb_Cancel1},
     [MENU_ITEM]            = {COMPOUND_STRING("ITEM"),            CursorCb_Item},
@@ -873,7 +874,7 @@ static const u8 sPartyMenuAction_SummarySwitchCancel[] = {MENU_SUMMARY, MENU_SWI
 static const u8 sPartyMenuAction_ShiftSummaryCancel[] = {MENU_SHIFT, MENU_SUMMARY, MENU_CANCEL1};
 static const u8 sPartyMenuAction_SendOutSummaryCancel[] = {MENU_SEND_OUT, MENU_SUMMARY, MENU_CANCEL1};
 static const u8 sPartyMenuAction_SummaryCancel[] = {MENU_SUMMARY, MENU_CANCEL1};
-static const u8 sPartyMenuAction_WonderTrade[] = {MENU_WONDER_TRADE, MENU_SUMMARY, MENU_CANCEL1};
+static const u8 sPartyMenuAction_WonderTrade[] = {MENU_WONDER_TRADE, MENU_SUMMARY, MENU_WONDER_TRADE_ITEM, MENU_CANCEL1};
 static const u8 sPartyMenuAction_EnterSummaryCancel[] = {MENU_ENTER, MENU_SUMMARY, MENU_CANCEL1};
 static const u8 sPartyMenuAction_NoEntrySummaryCancel[] = {MENU_NO_ENTRY, MENU_SUMMARY, MENU_CANCEL1};
 static const u8 sPartyMenuAction_StoreSummaryCancel[] = {MENU_STORE, MENU_SUMMARY, MENU_CANCEL1};

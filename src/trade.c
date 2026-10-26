@@ -3475,7 +3475,7 @@ static bool8 DoTradeAnim_Cable(void)
         }
         break;
     case STATE_SEND_MSG:
-        StringExpandPlaceholders(gStringVar4, gText_XWillBeSentToY);
+        StringExpandPlaceholders(gStringVar4, sIsWonderTradeScene ? gText_WonderTradeMonWillBeTraded : gText_XWillBeSentToY);
         DrawTextOnTradeWindow(0, gStringVar4, 0);
 
         if (sTradeAnim->monSpecies[TRADE_PLAYER] != SPECIES_EGG)
@@ -3949,7 +3949,7 @@ static bool8 DoTradeAnim_Wireless(void)
         }
         break;
     case STATE_SEND_MSG:
-        StringExpandPlaceholders(gStringVar4, gText_XWillBeSentToY);
+        StringExpandPlaceholders(gStringVar4, sIsWonderTradeScene ? gText_WonderTradeMonWillBeTraded : gText_XWillBeSentToY);
         DrawTextOnTradeWindow(0, gStringVar4, 0);
 
         if (sTradeAnim->monSpecies[TRADE_PLAYER] != SPECIES_EGG)
